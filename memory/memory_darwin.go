@@ -4,6 +4,7 @@ package memory
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os/exec"
@@ -128,9 +129,12 @@ type memorySwap struct {
 
 func collectSwapStats(out io.Reader) (*memorySwap, error) {
 	var total, used, free float64
-	_, err := fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
+	cnt, err := fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
 	if err != nil {
 		return nil, err
+	}
+	if cnt != 3 {
+		return nil, errors.New("failed to parse output of 'sysctl -n vm.swapusage'")
 	}
 	return &memorySwap{
 		total: uint64(total * 1024 * 1024),
