@@ -66,7 +66,7 @@ func Test_collectMemoryStats(t *testing.T) {
 		t.Errorf("error should be nil but got: %v", err)
 	}
 	pageSize := 4096
-	expected := Memory{
+	expected := &Memory{
 		Total:    uint64((446975 + 2154445 + 1511468 + 8107 + 72827) * pageSize),
 		Used:     uint64((446975 + 2154445 + 1511468 + 8107 - (383371 + 677870)) * pageSize),
 		Cached:   uint64((383371 + 677870) * pageSize),
@@ -101,7 +101,7 @@ func Test_collectSwapStats(t *testing.T) {
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
 	}
-	expected := memorySwap{
+	expected := &memorySwap{
 		total: uint64(4096.00 * 1024 * 1024),
 		used:  uint64(3184.75 * 1024 * 1024),
 		free:  uint64(911.25 * 1024 * 1024),

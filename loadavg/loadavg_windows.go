@@ -6,6 +6,6 @@ import (
 	"errors"
 )
 
-func get() (Loadavg, error) {
-	return Loadavg{}, errors.New("loadavg for Windows is not supported")
+func get() (*Loadavg, error) {
+	return nil, errors.New("loadavg for Windows is not supported")
 }

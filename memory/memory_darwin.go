@@ -12,19 +12,19 @@ import (
 )
 
 // Get memory statistics
-func Get() (memory Memory, err error) {
-	memory, err = collectMemoryStats(newMemoryGenerator())
+func Get() (*Memory, error) {
+	memory, err := collectMemoryStats(newMemoryGenerator())
 	if err != nil {
-		return
+		return nil, err
 	}
 	swap, err := collectSwapStats(newSwapGenerator())
 	if err != nil {
-		return
+		return nil, err
 	}
 	memory.SwapTotal = swap.total
 	memory.SwapUsed = swap.used
 	memory.SwapFree = swap.free
-	return
+	return memory, nil
 }
 
 // Memory represents memory statistics for darwin
@@ -81,18 +81,18 @@ const (
 //   - https://support.apple.com/en-us/HT201464#memory
 //   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
 //   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
-func collectMemoryStats(gen memoryGenerator) (Memory, error) {
+func collectMemoryStats(gen memoryGenerator) (*Memory, error) {
 	out, err := gen.Output()
 	if err != nil {
-		return Memory{}, err
+		return nil, err
 	}
 	scanner := bufio.NewScanner(out)
 	if err := gen.Start(); err != nil {
-		return Memory{}, err
+		return nil, err
 	}
 
 	if !scanner.Scan() { // skip the first line
-		return Memory{}, fmt.Errorf("failed to scan output of vm_stat")
+		return nil, fmt.Errorf("failed to scan output of vm_stat")
 	}
 
 	stats := make(map[string]uint64, 22)
@@ -118,10 +118,10 @@ func collectMemoryStats(gen memoryGenerator) (Memory, error) {
 	free := stats[freePages]
 
 	if err := gen.Finish(); err != nil {
-		return Memory{}, err
+		return nil, err
 	}
 
-	return Memory{
+	return &Memory{
 		Total:    used + cached + free,
 		Used:     used,
 		Cached:   cached,
@@ -163,20 +163,20 @@ func (gen swapGeneratorImpl) Finish() error {
 	return gen.cmd.Wait()
 }
 
-func collectSwapStats(gen swapGenerator) (memorySwap, error) {
+func collectSwapStats(gen swapGenerator) (*memorySwap, error) {
 	out, err := gen.Output()
 	if err != nil {
-		return memorySwap{}, err
+		return nil, err
 	}
 	if err := gen.Start(); err != nil {
-		return memorySwap{}, err
+		return nil, err
 	}
 	var total, used, free float64
 	_, err = fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
 	if err := gen.Finish(); err != nil {
-		return memorySwap{}, err
+		return nil, err
 	}
-	return memorySwap{
+	return &memorySwap{
 		total: uint64(total * 1024 * 1024),
 		used:  uint64(used * 1024 * 1024),
 		free:  uint64(free * 1024 * 1024),

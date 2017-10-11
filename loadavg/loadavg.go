@@ -1,7 +1,7 @@
 package loadavg
 
 // Get load average
-func Get() (Loadavg, error) {
+func Get() (*Loadavg, error) {
 	return get()
 }
 
