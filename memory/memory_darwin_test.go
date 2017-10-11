@@ -20,7 +20,7 @@ func (generator memoryGeneratorMock) Start() error {
 	return nil
 }
 
-func (generator memoryGeneratorMock) Output() io.Reader {
+func (generator memoryGeneratorMock) Output() (io.Reader, error) {
 	return strings.NewReader(
 		`Mach Virtual Memory Statistics: (page size of 4096 bytes)
 Pages free:                               72827.
@@ -45,7 +45,7 @@ Pageins:                                6333901.
 Pageouts:                                   353.
 Swapins:                                      0.
 Swapouts:                                     0.
-`)
+`), nil
 }
 
 func (generator memoryGeneratorMock) Finish() error {

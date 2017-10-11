@@ -17,23 +17,32 @@ func Get() (memory Memory, err error) {
 	if err != nil {
 		return
 	}
+	swap, err := collectSwapStats(newSwapGenerator())
+	if err != nil {
+		return
+	}
+	memory.SwapTotal = swap.total
+	memory.SwapUsed = swap.used
+	memory.SwapFree = swap.free
 	return
 }
 
 // Memory represents memory statistics for darwin
 type Memory struct {
-	Total    uint64
-	Used     uint64
-	Cached   uint64
-	Free     uint64
-	Active   uint64
-	Inactive uint64
+	Total     uint64
+	Used      uint64
+	Cached    uint64
+	Free      uint64
+	Active    uint64
+	Inactive  uint64
+	SwapTotal uint64
+	SwapUsed  uint64
+	SwapFree  uint64
 }
 
 type memoryGenerator interface {
-	Name() string
 	Start() error
-	Output() io.Reader
+	Output() (io.Reader, error)
 	Finish() error
 }
 
@@ -52,9 +61,9 @@ func (generator memoryGeneratorImpl) Start() error {
 func (generator memoryGeneratorImpl) Output() (io.Reader, error) {
 	stdout, err := generator.cmd.StdoutPipe()
 	if err != nil {
-		panic(fmt.Sprintf("%+v", err))
+		return nil, err
 	}
-	return stdout
+	return stdout, nil
 }
 
 func (generator memoryGeneratorImpl) Finish() error {
@@ -77,13 +86,17 @@ const (
 //   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
 //   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
 func collectMemoryStats(generator memoryGenerator) (Memory, error) {
-	scanner := bufio.NewScanner(generator.Output())
+	out, err := generator.Output()
+	if err != nil {
+		return Memory{}, err
+	}
+	scanner := bufio.NewScanner(out)
 	if err := generator.Start(); err != nil {
 		return Memory{}, err
 	}
 
 	if !scanner.Scan() { // skip the first line
-		return Memory{}, fmt.Errorf("failed to scan output of %s", generator.Name())
+		return Memory{}, fmt.Errorf("failed to scan output of vm_stat")
 	}
 
 	stats := make(map[string]uint64, 22)
@@ -119,5 +132,61 @@ func collectMemoryStats(generator memoryGenerator) (Memory, error) {
 		Free:     free,
 		Active:   active,
 		Inactive: inactive,
+	}, nil
+}
+
+type memorySwap struct {
+	total uint64
+	free  uint64
+	used  uint64
+}
+
+type swapGenerator interface {
+	Start() error
+	Output() (io.Reader, error)
+	Finish() error
+}
+
+type swapGeneratorImpl struct {
+	cmd *exec.Cmd
+}
+
+func newSwapGenerator() *swapGeneratorImpl {
+	return &swapGeneratorImpl{cmd: exec.Command("sysctl", "-n", "vm.swapusage")}
+}
+
+func (generator swapGeneratorImpl) Start() error {
+	return generator.cmd.Start()
+}
+
+func (generator swapGeneratorImpl) Output() (io.Reader, error) {
+	stdout, err := generator.cmd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+	return stdout, nil
+}
+
+func (generator swapGeneratorImpl) Finish() error {
+	return generator.cmd.Wait()
+}
+
+func collectSwapStats(generator swapGenerator) (memorySwap, error) {
+	out, err := generator.Output()
+	if err != nil {
+		return memorySwap{}, err
+	}
+	if err := generator.Start(); err != nil {
+		return memorySwap{}, err
+	}
+	var total, used, free float64
+	_, err = fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
+	if err := generator.Finish(); err != nil {
+		return memorySwap{}, err
+	}
+	return memorySwap{
+		total: uint64(total * 1024 * 1024),
+		used:  uint64(used * 1024 * 1024),
+		free:  uint64(free * 1024 * 1024),
 	}, nil
 }
