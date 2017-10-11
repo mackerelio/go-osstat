@@ -3,21 +3,23 @@
 package memory
 
 import (
-	"io"
 	"reflect"
 	"strings"
 	"testing"
 )
 
-type memoryGeneratorMock struct {
+func Test_GetMemory(t *testing.T) {
+	memory, err := Get()
+	if err != nil {
+		t.Errorf("error should be nil but got: %v", err)
+	}
+	if memory.Used <= 0 || memory.Total <= 0 {
+		t.Errorf("invalid memory value: %+v", memory)
+	}
 }
 
-func (gen memoryGeneratorMock) Start() error {
-	return nil
-}
-
-func (gen memoryGeneratorMock) Output() (io.Reader, error) {
-	return strings.NewReader(
+func Test_collectMemoryStats(t *testing.T) {
+	got, err := collectMemoryStats(strings.NewReader(
 		`Mach Virtual Memory Statistics: (page size of 4096 bytes)
 Pages free:                               72827.
 Pages active:                           2154445.
@@ -41,25 +43,7 @@ Pageins:                                6333901.
 Pageouts:                                   353.
 Swapins:                                      0.
 Swapouts:                                     0.
-`), nil
-}
-
-func (gen memoryGeneratorMock) Finish() error {
-	return nil
-}
-
-func Test_GetMemory(t *testing.T) {
-	memory, err := Get()
-	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
-	}
-	if memory.Used <= 0 || memory.Total <= 0 {
-		t.Errorf("invalid memory value: %+v", memory)
-	}
-}
-
-func Test_collectMemoryStats(t *testing.T) {
-	got, err := collectMemoryStats(memoryGeneratorMock{})
+`))
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
 	}
@@ -77,25 +61,10 @@ func Test_collectMemoryStats(t *testing.T) {
 	}
 }
 
-type swapGeneratorMock struct {
-}
-
-func (gen swapGeneratorMock) Start() error {
-	return nil
-}
-
-func (gen swapGeneratorMock) Output() (io.Reader, error) {
-	return strings.NewReader(
-		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
-`), nil
-}
-
-func (gen swapGeneratorMock) Finish() error {
-	return nil
-}
-
 func Test_collectSwapStats(t *testing.T) {
-	got, err := collectSwapStats(swapGeneratorMock{})
+	got, err := collectSwapStats(strings.NewReader(
+		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
+`))
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
 	}
