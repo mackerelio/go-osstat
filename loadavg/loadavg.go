@@ -7,7 +7,5 @@ func Get() (*Loadavg, error) {
 
 // Loadavg represents load average values
 type Loadavg struct {
-	Loadavg1  float64
-	Loadavg5  float64
-	Loadavg15 float64
+	Loadavg1, Loadavg5, Loadavg15 float64
 }

@@ -26,15 +26,7 @@ func Get() (*Memory, error) {
 
 // Memory represents memory statistics for linux
 type Memory struct {
-	Total     uint64
-	Used      uint64
-	Cached    uint64
-	Free      uint64
-	Active    uint64
-	Inactive  uint64
-	SwapTotal uint64
-	SwapUsed  uint64
-	SwapFree  uint64
+	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapFree uint64
 }
 
 const (
