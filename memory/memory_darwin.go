@@ -25,7 +25,9 @@ func Get() (*Memory, error) {
 	if err != nil {
 		return nil, err
 	}
-	cmd.Wait()
+	if err := cmd.Wait(); err != nil {
+		return nil, err
+	}
 
 	cmd = exec.Command("sysctl", "-n", "vm.swapusage")
 	out, err = cmd.StdoutPipe()
@@ -39,7 +41,9 @@ func Get() (*Memory, error) {
 	if err != nil {
 		return nil, err
 	}
-	cmd.Wait()
+	if err := cmd.Wait(); err != nil {
+		return nil, err
+	}
 
 	memory.SwapTotal = swap.total
 	memory.SwapUsed = swap.used
