@@ -26,37 +26,34 @@ func Get() (*Memory, error) {
 
 // Memory represents memory statistics for linux
 type Memory struct {
-	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapFree uint64
+	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapCached, SwapFree uint64
 }
-
-const (
-	memTotal      = "MemTotal"
-	memFree       = "MemFree"
-	memAvailable  = "MemAvailable"
-	memBuffers    = "Buffers"
-	memCached     = "Cached"
-	memActive     = "Active"
-	memInactive   = "Inactive"
-	memSwapCached = "SwapCached"
-	memSwapTotal  = "SwapTotal"
-	memSwapFree   = "SwapFree"
-)
 
 func collectMemoryStats(out io.Reader) (*Memory, error) {
 	scanner := bufio.NewScanner(out)
-	stats := make(map[string]uint64, 10)
+	var memory Memory
+	var buffers uint64
+	memStats := map[string]*uint64{
+		"MemTotal":   &memory.Total,
+		"MemFree":    &memory.Free,
+		"Buffers":    &buffers,
+		"Cached":     &memory.Cached,
+		"Active":     &memory.Active,
+		"Inactive":   &memory.Inactive,
+		"SwapCached": &memory.SwapCached,
+		"SwapTotal":  &memory.SwapTotal,
+		"SwapFree":   &memory.SwapFree,
+	}
 	for scanner.Scan() {
 		line := scanner.Text()
 		i := strings.IndexRune(line, ':')
 		if i < 0 {
 			continue
 		}
-		switch line[:i] {
-		case memTotal, memFree, memAvailable, memBuffers, memCached,
-			memActive, memInactive, memSwapCached, memSwapTotal, memSwapFree:
+		if ptr := memStats[line[:i]]; ptr != nil {
 			val := strings.TrimSpace(strings.TrimRight(line[i+1:], "kB"))
 			if v, err := strconv.ParseUint(val, 10, 64); err == nil {
-				stats[line[:i]] = v * 1024
+				*ptr = v * 1024
 			}
 		}
 	}
@@ -64,15 +61,7 @@ func collectMemoryStats(out io.Reader) (*Memory, error) {
 		return nil, err
 	}
 
-	return &Memory{
-		Total:     stats[memTotal],
-		Used:      stats[memTotal] - stats[memFree] - stats[memBuffers] - stats[memCached],
-		Cached:    stats[memCached],
-		Free:      stats[memFree],
-		Active:    stats[memActive],
-		Inactive:  stats[memInactive],
-		SwapTotal: stats[memSwapTotal],
-		SwapUsed:  stats[memSwapTotal] - stats[memSwapFree],
-		SwapFree:  stats[memSwapFree],
-	}, nil
+	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
+	memory.Used = memory.Total - memory.Free - buffers - memory.Cached
+	return &memory, nil
 }

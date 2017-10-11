@@ -57,17 +57,6 @@ type Memory struct {
 	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapFree uint64
 }
 
-const (
-	freePages        = "Pages free"
-	activePages      = "Pages active"
-	inactivePages    = "Pages inactive"
-	speculativePages = "Pages speculative"
-	wiredDownPages   = "Pages wired down"
-	purgeablePages   = "Pages purgeable"
-	fileBackedPages  = "File-backed pages"
-	compressedPages  = "Pages occupied by compressor"
-)
-
 // References:
 //   - https://support.apple.com/en-us/HT201464#memory
 //   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
@@ -78,39 +67,39 @@ func collectMemoryStats(out io.Reader) (*Memory, error) {
 		return nil, fmt.Errorf("failed to scan output of vm_stat")
 	}
 
-	stats := make(map[string]uint64, 22)
-	pageSize := uint64(4096)
+	var memory Memory
+	var speculative, wired, purgeable, fileBacked, compressed uint64
+	memStats := map[string]*uint64{
+		"Pages free":                   &memory.Free,
+		"Pages active":                 &memory.Active,
+		"Pages inactive":               &memory.Inactive,
+		"Pages speculative":            &speculative,
+		"Pages wired down":             &wired,
+		"Pages purgeable":              &purgeable,
+		"File-backed pages":            &fileBacked,
+		"Pages occupied by compressor": &compressed,
+	}
 	for scanner.Scan() {
 		line := scanner.Text()
 		i := strings.IndexRune(line, ':')
 		if i < 0 {
 			continue
 		}
-		val := strings.TrimRight(strings.TrimSpace(line[i+1:]), ".")
-		if v, err := strconv.ParseUint(val, 10, 64); err == nil {
-			stats[line[:i]] = v * pageSize
+		if ptr := memStats[line[:i]]; ptr != nil {
+			val := strings.TrimRight(strings.TrimSpace(line[i+1:]), ".")
+			if v, err := strconv.ParseUint(val, 10, 64); err == nil {
+				*ptr = v * 4096
+			}
 		}
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
 
-	wired := stats[wiredDownPages]
-	compressed := stats[compressedPages]
-	cached := stats[purgeablePages] + stats[fileBackedPages]
-	active := stats[activePages]
-	inactive := stats[inactivePages]
-	used := wired + compressed + active + inactive + stats[speculativePages] - cached
-	free := stats[freePages]
-
-	return &Memory{
-		Total:    used + cached + free,
-		Used:     used,
-		Cached:   cached,
-		Free:     free,
-		Active:   active,
-		Inactive: inactive,
-	}, nil
+	memory.Cached = purgeable + fileBacked
+	memory.Used = wired + compressed + memory.Active + memory.Inactive + speculative - memory.Cached
+	memory.Total = memory.Used + memory.Cached + memory.Free
+	return &memory, nil
 }
 
 type memorySwap struct {
