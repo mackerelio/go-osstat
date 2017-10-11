@@ -54,16 +54,16 @@ func newMemoryGenerator() *memoryGeneratorImpl {
 	return &memoryGeneratorImpl{cmd: exec.Command("vm_stat")}
 }
 
-func (generator memoryGeneratorImpl) Start() error {
-	return generator.cmd.Start()
+func (gen memoryGeneratorImpl) Start() error {
+	return gen.cmd.Start()
 }
 
-func (generator memoryGeneratorImpl) Output() (io.Reader, error) {
-	return generator.cmd.StdoutPipe()
+func (gen memoryGeneratorImpl) Output() (io.Reader, error) {
+	return gen.cmd.StdoutPipe()
 }
 
-func (generator memoryGeneratorImpl) Finish() error {
-	return generator.cmd.Wait()
+func (gen memoryGeneratorImpl) Finish() error {
+	return gen.cmd.Wait()
 }
 
 const (
@@ -81,13 +81,13 @@ const (
 //   - https://support.apple.com/en-us/HT201464#memory
 //   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
 //   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
-func collectMemoryStats(generator memoryGenerator) (Memory, error) {
-	out, err := generator.Output()
+func collectMemoryStats(gen memoryGenerator) (Memory, error) {
+	out, err := gen.Output()
 	if err != nil {
 		return Memory{}, err
 	}
 	scanner := bufio.NewScanner(out)
-	if err := generator.Start(); err != nil {
+	if err := gen.Start(); err != nil {
 		return Memory{}, err
 	}
 
@@ -117,7 +117,7 @@ func collectMemoryStats(generator memoryGenerator) (Memory, error) {
 	used := wired + compressed + active + inactive + stats[speculativePages] - cached
 	free := stats[freePages]
 
-	if err := generator.Finish(); err != nil {
+	if err := gen.Finish(); err != nil {
 		return Memory{}, err
 	}
 
@@ -151,29 +151,29 @@ func newSwapGenerator() *swapGeneratorImpl {
 	return &swapGeneratorImpl{cmd: exec.Command("sysctl", "-n", "vm.swapusage")}
 }
 
-func (generator swapGeneratorImpl) Start() error {
-	return generator.cmd.Start()
+func (gen swapGeneratorImpl) Start() error {
+	return gen.cmd.Start()
 }
 
-func (generator swapGeneratorImpl) Output() (io.Reader, error) {
-	return generator.cmd.StdoutPipe()
+func (gen swapGeneratorImpl) Output() (io.Reader, error) {
+	return gen.cmd.StdoutPipe()
 }
 
-func (generator swapGeneratorImpl) Finish() error {
-	return generator.cmd.Wait()
+func (gen swapGeneratorImpl) Finish() error {
+	return gen.cmd.Wait()
 }
 
-func collectSwapStats(generator swapGenerator) (memorySwap, error) {
-	out, err := generator.Output()
+func collectSwapStats(gen swapGenerator) (memorySwap, error) {
+	out, err := gen.Output()
 	if err != nil {
 		return memorySwap{}, err
 	}
-	if err := generator.Start(); err != nil {
+	if err := gen.Start(); err != nil {
 		return memorySwap{}, err
 	}
 	var total, used, free float64
 	_, err = fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
-	if err := generator.Finish(); err != nil {
+	if err := gen.Finish(); err != nil {
 		return memorySwap{}, err
 	}
 	return memorySwap{

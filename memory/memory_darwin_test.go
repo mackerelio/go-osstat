@@ -12,11 +12,11 @@ import (
 type memoryGeneratorMock struct {
 }
 
-func (generator memoryGeneratorMock) Start() error {
+func (gen memoryGeneratorMock) Start() error {
 	return nil
 }
 
-func (generator memoryGeneratorMock) Output() (io.Reader, error) {
+func (gen memoryGeneratorMock) Output() (io.Reader, error) {
 	return strings.NewReader(
 		`Mach Virtual Memory Statistics: (page size of 4096 bytes)
 Pages free:                               72827.
@@ -44,14 +44,19 @@ Swapouts:                                     0.
 `), nil
 }
 
-func (generator memoryGeneratorMock) Finish() error {
+func (gen memoryGeneratorMock) Finish() error {
 	return nil
 }
 
 func Test_GetMemory(t *testing.T) {
-	_, err := Get()
+	memory, err := Get()
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
+	}
+	if memory.Used <= 0 ||
+		memory.Total <= 0 ||
+		memory.SwapTotal <= 0 {
+		t.Errorf("invalid memory value: %v", memory)
 	}
 }
 
@@ -77,17 +82,17 @@ func Test_collectMemoryStats(t *testing.T) {
 type swapGeneratorMock struct {
 }
 
-func (generator swapGeneratorMock) Start() error {
+func (gen swapGeneratorMock) Start() error {
 	return nil
 }
 
-func (generator swapGeneratorMock) Output() (io.Reader, error) {
+func (gen swapGeneratorMock) Output() (io.Reader, error) {
 	return strings.NewReader(
 		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
 `), nil
 }
 
-func (generator swapGeneratorMock) Finish() error {
+func (gen swapGeneratorMock) Finish() error {
 	return nil
 }
 
