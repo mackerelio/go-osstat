@@ -108,6 +108,9 @@ func collectMemoryStats(gen memoryGenerator) (*Memory, error) {
 			stats[line[:i]] = v * pageSize
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
 
 	wired := stats[wiredDownPages]
 	compressed := stats[compressedPages]
