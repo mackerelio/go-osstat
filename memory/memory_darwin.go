@@ -59,11 +59,7 @@ func (generator memoryGeneratorImpl) Start() error {
 }
 
 func (generator memoryGeneratorImpl) Output() (io.Reader, error) {
-	stdout, err := generator.cmd.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-	return stdout, nil
+	return generator.cmd.StdoutPipe()
 }
 
 func (generator memoryGeneratorImpl) Finish() error {
@@ -160,11 +156,7 @@ func (generator swapGeneratorImpl) Start() error {
 }
 
 func (generator swapGeneratorImpl) Output() (io.Reader, error) {
-	stdout, err := generator.cmd.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-	return stdout, nil
+	return generator.cmd.StdoutPipe()
 }
 
 func (generator swapGeneratorImpl) Finish() error {
