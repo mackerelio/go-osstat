@@ -53,10 +53,8 @@ func Test_GetMemory(t *testing.T) {
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
 	}
-	if memory.Used <= 0 ||
-		memory.Total <= 0 ||
-		memory.SwapTotal <= 0 {
-		t.Errorf("invalid memory value: %v", memory)
+	if memory.Used <= 0 || memory.Total <= 0 {
+		t.Errorf("invalid memory value: %+v", memory)
 	}
 }
 
@@ -75,7 +73,7 @@ func Test_collectMemoryStats(t *testing.T) {
 		Inactive: uint64(1511468 * pageSize),
 	}
 	if !reflect.DeepEqual(got, expected) {
-		t.Errorf("invalid memory value: %v (expected: %v)", got, expected)
+		t.Errorf("invalid memory value: %+v (expected: %+v)", got, expected)
 	}
 }
 
