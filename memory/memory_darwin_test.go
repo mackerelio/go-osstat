@@ -12,10 +12,6 @@ import (
 type memoryGeneratorMock struct {
 }
 
-func (generator memoryGeneratorMock) Name() string {
-	return "memory-tester"
-}
-
 func (generator memoryGeneratorMock) Start() error {
 	return nil
 }
@@ -75,5 +71,37 @@ func Test_collectMemoryStats(t *testing.T) {
 	}
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("invalid memory value: %v (expected: %v)", got, expected)
+	}
+}
+
+type swapGeneratorMock struct {
+}
+
+func (generator swapGeneratorMock) Start() error {
+	return nil
+}
+
+func (generator swapGeneratorMock) Output() (io.Reader, error) {
+	return strings.NewReader(
+		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
+`), nil
+}
+
+func (generator swapGeneratorMock) Finish() error {
+	return nil
+}
+
+func Test_collectSwapStats(t *testing.T) {
+	got, err := collectSwapStats(swapGeneratorMock{})
+	if err != nil {
+		t.Errorf("error should be nil but got: %v", err)
+	}
+	expected := memorySwap{
+		total: uint64(4096.00 * 1024 * 1024),
+		used:  uint64(3184.75 * 1024 * 1024),
+		free:  uint64(911.25 * 1024 * 1024),
+	}
+	if !reflect.DeepEqual(got, expected) {
+		t.Errorf("invalid memory swap value: %v (expected: %v)", got, expected)
 	}
 }
