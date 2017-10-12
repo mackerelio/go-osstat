@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_GetMemory(t *testing.T) {
+func TestGetMemory(t *testing.T) {
 	memory, err := Get()
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
@@ -18,7 +18,7 @@ func Test_GetMemory(t *testing.T) {
 	}
 }
 
-func Test_collectMemoryStats(t *testing.T) {
+func TestCollectMemoryStats(t *testing.T) {
 	got, err := collectMemoryStats(strings.NewReader(
 		`Mach Virtual Memory Statistics: (page size of 4096 bytes)
 Pages free:                               72827.
@@ -61,7 +61,7 @@ Swapouts:                                     0.
 	}
 }
 
-func Test_collectSwapStats(t *testing.T) {
+func TestcollectSwapStats(t *testing.T) {
 	got, err := collectSwapStats(strings.NewReader(
 		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
 `))

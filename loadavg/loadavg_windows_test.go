@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_GetLoadavg(t *testing.T) {
+func TestGetLoadavg(t *testing.T) {
 	loadavg, err := Get()
 	if err == nil {
 		t.Errorf("error should occur for Windows")

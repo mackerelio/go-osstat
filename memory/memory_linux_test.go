@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_GetMemory(t *testing.T) {
+func TestGetMemory(t *testing.T) {
 	memory, err := Get()
 	if err != nil {
 		t.Errorf("error should be nil but got: %v", err)
@@ -18,7 +18,7 @@ func Test_GetMemory(t *testing.T) {
 	}
 }
 
-func Test_collectMemoryStats(t *testing.T) {
+func TestCollectMemoryStats(t *testing.T) {
 	got, err := collectMemoryStats(strings.NewReader(
 		`MemTotal:        1929620 kB
 MemFree:          113720 kB
