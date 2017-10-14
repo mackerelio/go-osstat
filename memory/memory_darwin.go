@@ -110,7 +110,7 @@ func collectSwapStats(out io.Reader) (*memorySwap, error) {
 	var total, used, free float64
 	cnt, err := fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to scan output of sysctl -n vmswapusage: %s", err)
 	}
 	if cnt != 3 {
 		return nil, errors.New("failed to parse output of 'sysctl -n vm.swapusage'")
