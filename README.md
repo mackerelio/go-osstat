@@ -1,4 +1,11 @@
-# system metrics library for Go
+# OS system statistics library for Go
+
+## Supported OS
+||loadavg|cpu|memory|network|disk|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|Linux|o|x|o|o|x|
+|Darwin|o|o|o|o|x|
+|Windows|x|x|x|x|x|
 
 ## LICENSE
 Copyright 2017 Hatena Co., Ltd.
