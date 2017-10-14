@@ -11,7 +11,7 @@ import (
 func TestGetMemory(t *testing.T) {
 	memory, err := Get()
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	if memory.Used <= 0 || memory.Total <= 0 {
 		t.Errorf("invalid memory value: %+v", memory)
@@ -45,7 +45,7 @@ Swapins:                                      0.
 Swapouts:                                     0.
 `))
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	pageSize := 4096
 	expected := &Memory{
@@ -66,7 +66,7 @@ func TestcollectSwapStats(t *testing.T) {
 		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
 `))
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	expected := &memorySwap{
 		total: uint64(4096.00 * 1024 * 1024),

@@ -11,7 +11,7 @@ import (
 func TestGetCpu(t *testing.T) {
 	cpu, err := Get()
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	if cpu.User <= 0 || cpu.System <= 0 {
 		t.Errorf("invalid cpu value: %+v", cpu)
@@ -26,7 +26,7 @@ func TestCollectCpuStats(t *testing.T) {
  10  7 82  2.28 2.18 2.19
 `))
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	expected := &Cpu{User: 10.0, System: 7.0, Idle: 82.0}
 	if !reflect.DeepEqual(got, expected) {

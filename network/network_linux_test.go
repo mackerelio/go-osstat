@@ -11,7 +11,7 @@ import (
 func TestGetnetwork(t *testing.T) {
 	networks, err := Get()
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	for _, network := range networks {
 		if network.Name == "en0" && network.RxBytes <= 0 {
@@ -29,7 +29,7 @@ func TestCollectNetworkStats(t *testing.T) {
   eth0: 26054426   73542    0    0    0     0          0         0 12352148   58473    0    0    0     0       0          0
 `))
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	expected := []Network{
 		{"wlan0", 1188035151, 49774221},

@@ -11,7 +11,7 @@ import (
 func TestGetMemory(t *testing.T) {
 	memory, err := Get()
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	if memory.Used <= 0 || memory.Total <= 0 {
 		t.Errorf("invalid memory value: %+v", memory)
@@ -68,7 +68,7 @@ DirectMap4k:       24568 kB
 DirectMap2M:      888832 kB
 `))
 	if err != nil {
-		t.Errorf("error should be nil but got: %v", err)
+		t.Fatalf("error should be nil but got: %v", err)
 	}
 	expected := &Memory{
 		Total:      uint64(1929620 * 1024),
