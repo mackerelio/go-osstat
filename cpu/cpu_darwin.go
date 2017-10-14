@@ -3,54 +3,37 @@
 package cpu
 
 import (
-	"bufio"
 	"fmt"
-	"io"
-	"os/exec"
+	"unsafe"
 )
+
+// #include <mach/mach_host.h>
+// #include <mach/host_info.h>
+import "C"
 
 // Get cpu statistics
 func Get() (*Cpu, error) {
-	cmd := exec.Command("iostat", "-n0", "-c2")
-	out, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, err
-	}
-	cpu, err := collectCpuStats(out)
-	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Wait(); err != nil {
-		return nil, err
-	}
-	return cpu, nil
+	return collectCpuStats()
 }
 
 // Cpu represents cpu statistics for darwin
 type Cpu struct {
-	User, System, Idle float64
+	User, System, Idle, Nice, Total uint64
 }
 
-func collectCpuStats(out io.Reader) (*Cpu, error) {
-	scanner := bufio.NewScanner(out)
-	for i := 0; i < 4; i++ {
-		if !scanner.Scan() {
-			return nil, fmt.Errorf("failed to scan output of iostat")
-		}
+func collectCpuStats() (*Cpu, error) {
+	var cpuLoad C.host_cpu_load_info_data_t
+	var count C.mach_msg_type_number_t = C.HOST_CPU_LOAD_INFO_COUNT
+	ret := C.host_statistics(C.host_t(C.mach_host_self()), C.HOST_CPU_LOAD_INFO, C.host_info_t(unsafe.Pointer(&cpuLoad)), &count)
+	if ret != C.KERN_SUCCESS {
+		return nil, fmt.Errorf("%d", ret)
 	}
-
-	var cpu Cpu
-	line := scanner.Text()
-	ret, err := fmt.Sscanf(line, "%f %f %f", &cpu.User, &cpu.System, &cpu.Idle)
-	if err != nil || ret != 3 {
-		return nil, fmt.Errorf("unexpected output of iostat")
+	cpu := Cpu{
+		User:   uint64(cpuLoad.cpu_ticks[C.CPU_STATE_USER]),
+		System: uint64(cpuLoad.cpu_ticks[C.CPU_STATE_SYSTEM]),
+		Idle:   uint64(cpuLoad.cpu_ticks[C.CPU_STATE_IDLE]),
+		Nice:   uint64(cpuLoad.cpu_ticks[C.CPU_STATE_NICE]),
 	}
-	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("scan error for iostat: %s", err)
-	}
-
+	cpu.Total = cpu.User + cpu.System + cpu.Idle + cpu.Nice
 	return &cpu, nil
 }
