@@ -3,7 +3,7 @@
 ## Supported OS
 ||loadavg|cpu|memory|network|disk|
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|Linux|o|x|o|o|x|
+|Linux|o|o|o|o|x|
 |Darwin|o|o|o|o|x|
 |Windows|x|x|x|x|x|
 
