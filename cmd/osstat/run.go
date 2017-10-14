@@ -13,12 +13,6 @@ type Generator interface {
 
 func Run(args []string, out io.Writer) []error {
 	var wg sync.WaitGroup
-	generators := []Generator{
-		&loadavgGenerator{},
-		&cpuGenerator{},
-		&memoryGenerator{},
-		&networkGenerator{},
-	}
 
 	for _, generator := range generators {
 		wg.Add(1)
