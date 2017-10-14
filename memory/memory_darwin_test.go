@@ -13,7 +13,7 @@ func TestGetMemory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	if memory.Used <= 0 || memory.Total <= 0 {
+	if memory.Used <= 0 || memory.Total <= 0 || memory.SwapTotal <= 0 {
 		t.Errorf("invalid memory value: %+v", memory)
 	}
 }
@@ -61,19 +61,21 @@ Swapouts:                                     0.
 	}
 }
 
-func TestcollectSwapStats(t *testing.T) {
+func TestCollectSwapStats(t *testing.T) {
 	got, err := collectSwapStats(strings.NewReader(
-		`total = 4096.00M  used = 3184.75M  free = 911.25M  (encrypted)
-`))
+		"\x00\x00\x00\x40\x01\x00\x00\x00\x00\x00\x3c\x56\x00\x00\x00\x00\x00\x00\xc4\xe9\x00\x00\x00\x00\x00\x10\x00\x00\x01\x00\x00",
+	))
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := &memorySwap{
-		total: uint64(4096.00 * 1024 * 1024),
-		used:  uint64(3184.75 * 1024 * 1024),
-		free:  uint64(911.25 * 1024 * 1024),
+	expected := &swapUsage{
+		Total:     0x0000000140000000,
+		Avail:     0x00000000563c0000,
+		Used:      0x00000000e9c40000,
+		Pagesize:  4096,
+		Encrypted: true,
 	}
 	if !reflect.DeepEqual(got, expected) {
-		t.Errorf("invalid memory swap value: %v (expected: %v)", got, expected)
+		t.Errorf("invalid memory value: %+v (expected: %+v)", got, expected)
 	}
 }

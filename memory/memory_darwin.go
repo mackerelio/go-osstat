@@ -4,12 +4,13 @@ package memory
 
 import (
 	"bufio"
-	"errors"
+	"encoding/binary"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 // Get memory statistics
@@ -30,25 +31,18 @@ func Get() (*Memory, error) {
 		return nil, err
 	}
 
-	cmd = exec.Command("sysctl", "-n", "vm.swapusage")
-	out, err = cmd.StdoutPipe()
+	ret, err := syscall.Sysctl("vm.swapusage")
+	if err != nil {
+		return nil, fmt.Errorf("failed in sysctl vm.swapusage: %s", err)
+	}
+	swap, err := collectSwapStats(strings.NewReader(ret))
 	if err != nil {
 		return nil, err
 	}
-	if err := cmd.Start(); err != nil {
-		return nil, err
-	}
-	swap, err := collectSwapStats(out)
-	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Wait(); err != nil {
-		return nil, err
-	}
+	memory.SwapTotal = swap.Total
+	memory.SwapUsed = swap.Used
+	memory.SwapFree = swap.Avail
 
-	memory.SwapTotal = swap.total
-	memory.SwapUsed = swap.used
-	memory.SwapFree = swap.free
 	return memory, nil
 }
 
@@ -102,22 +96,20 @@ func collectMemoryStats(out io.Reader) (*Memory, error) {
 	return &memory, nil
 }
 
-type memorySwap struct {
-	total, free, used uint64
+// xsw_usage in sysctl.h
+type swapUsage struct {
+	Total     uint64
+	Avail     uint64
+	Used      uint64
+	Pagesize  int32
+	Encrypted bool
 }
 
-func collectSwapStats(out io.Reader) (*memorySwap, error) {
-	var total, used, free float64
-	cnt, err := fmt.Fscanf(out, "total = %fM used = %fM free = %fM", &total, &used, &free)
+func collectSwapStats(out io.Reader) (*swapUsage, error) {
+	var swap swapUsage
+	err := binary.Read(out, binary.LittleEndian, &swap)
 	if err != nil {
-		return nil, fmt.Errorf("failed to scan output of 'sysctl -n vmswapusage': %s", err)
+		return nil, fmt.Errorf("failed to read result of sysctl vm.swapusage: %s", err)
 	}
-	if cnt != 3 {
-		return nil, errors.New("failed to parse output of 'sysctl -n vm.swapusage'")
-	}
-	return &memorySwap{
-		total: uint64(total * 1024 * 1024),
-		used:  uint64(used * 1024 * 1024),
-		free:  uint64(free * 1024 * 1024),
-	}, nil
+	return &swap, nil
 }
