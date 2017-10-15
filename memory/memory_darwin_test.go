@@ -13,7 +13,7 @@ func TestGetMemory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	if memory.Used <= 0 || memory.Total <= 0 || memory.SwapTotal <= 0 {
+	if memory.Used <= 0 || memory.Total <= 0 {
 		t.Errorf("invalid memory value: %+v", memory)
 	}
 }
