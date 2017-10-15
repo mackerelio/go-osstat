@@ -11,4 +11,7 @@ func TestGetLoadavg(t *testing.T) {
 	if err == nil {
 		t.Errorf("error should occur for Windows")
 	}
+	if loadavg != nil {
+		t.Errorf("loadavg should be nil")
+	}
 }
