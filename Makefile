@@ -1,4 +1,17 @@
+all: clean lint test
+
 test:
 	go test -v ./...
 
-.PHONY: test
+lint: testdeps
+	go vet ./...
+	golint -set_exit_status ./...
+
+testdeps:
+	go get -d -v -t ./...
+	go get github.com/golang/lint/golint
+
+clean:
+	go clean
+
+.PHONY: test lint testdeps clean
