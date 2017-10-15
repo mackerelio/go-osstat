@@ -14,21 +14,21 @@ type loadavgGenerator struct {
 	err     error
 }
 
-func (self *loadavgGenerator) Get() {
+func (gen *loadavgGenerator) Get() {
 	loadavg, err := loadavg.Get()
 	if err != nil {
-		self.err = err
+		gen.err = err
 		return
 	}
-	self.loadavg = loadavg
+	gen.loadavg = loadavg
 }
 
-func (self *loadavgGenerator) Error() error {
-	return self.err
+func (gen *loadavgGenerator) Error() error {
+	return gen.err
 }
 
-func (self *loadavgGenerator) Print(out io.Writer) {
-	loadavg := self.loadavg
+func (gen *loadavgGenerator) Print(out io.Writer) {
+	loadavg := gen.loadavg
 	fmt.Fprintf(out, "loadavg.1\t%f\t-\n", loadavg.Loadavg1)
 	fmt.Fprintf(out, "loadavg.5\t%f\t-\n", loadavg.Loadavg5)
 	fmt.Fprintf(out, "loadavg.15\t%f\t-\n", loadavg.Loadavg15)

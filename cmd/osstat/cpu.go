@@ -12,21 +12,21 @@ type cpuGenerator struct {
 	err error
 }
 
-func (self *cpuGenerator) Get() {
+func (gen *cpuGenerator) Get() {
 	cpu, err := cpu.Get()
 	if err != nil {
-		self.err = err
+		gen.err = err
 		return
 	}
-	self.cpu = cpu
+	gen.cpu = cpu
 }
 
-func (self *cpuGenerator) Error() error {
-	return self.err
+func (gen *cpuGenerator) Error() error {
+	return gen.err
 }
 
-func (self *cpuGenerator) Print(out io.Writer) {
-	cpu := self.cpu
+func (gen *cpuGenerator) Print(out io.Writer) {
+	cpu := gen.cpu
 	fmt.Fprintf(out, "cpu.user\t%d\t-\n", cpu.User)
 	fmt.Fprintf(out, "cpu.system\t%d\t-\n", cpu.System)
 	fmt.Fprintf(out, "cpu.idle\t%d\t-\n", cpu.Idle)

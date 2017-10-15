@@ -12,21 +12,21 @@ type memoryGenerator struct {
 	err    error
 }
 
-func (self *memoryGenerator) Get() {
+func (gen *memoryGenerator) Get() {
 	memory, err := memory.Get()
 	if err != nil {
-		self.err = err
+		gen.err = err
 		return
 	}
-	self.memory = memory
+	gen.memory = memory
 }
 
-func (self *memoryGenerator) Error() error {
-	return self.err
+func (gen *memoryGenerator) Error() error {
+	return gen.err
 }
 
-func (self *memoryGenerator) Print(out io.Writer) {
-	memory := self.memory
+func (gen *memoryGenerator) Print(out io.Writer) {
+	memory := gen.memory
 	fmt.Fprintf(out, "memory.total\t%d\tbytes\n", memory.Total)
 	fmt.Fprintf(out, "memory.used\t%d\tbytes\n", memory.Used)
 	fmt.Fprintf(out, "memory.cached\t%d\tbytes\n", memory.Cached)

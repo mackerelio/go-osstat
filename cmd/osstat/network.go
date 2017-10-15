@@ -12,21 +12,21 @@ type networkGenerator struct {
 	err      error
 }
 
-func (self *networkGenerator) Get() {
+func (gen *networkGenerator) Get() {
 	networks, err := network.Get()
 	if err != nil {
-		self.err = err
+		gen.err = err
 		return
 	}
-	self.networks = networks
+	gen.networks = networks
 }
 
-func (self *networkGenerator) Error() error {
-	return self.err
+func (gen *networkGenerator) Error() error {
+	return gen.err
 }
 
-func (self *networkGenerator) Print(out io.Writer) {
-	for _, network := range self.networks {
+func (gen *networkGenerator) Print(out io.Writer) {
+	for _, network := range gen.networks {
 		fmt.Fprintf(out, "network.%s.rx_bytes\t%d\tbytes\n", network.Name, network.RxBytes)
 		fmt.Fprintf(out, "network.%s.tx_bytes\t%d\tbytes\n", network.Name, network.TxBytes)
 	}
