@@ -1,0 +1,14 @@
+sudo: false
+
+language: go
+
+go:
+  - 1.8
+  - 1.9
+
+script:
+  - make test
+
+os:
+  - linux
+  - osx
