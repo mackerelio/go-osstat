@@ -32,7 +32,7 @@ func main() {
 |:--:|:--:|:--:|:--:|:--:|:--:|
 |Linux|o|o|o|o|x|
 |Darwin|o|△`*`|o|o|x|
-|Windows|x|x|x|x|x|
+|Windows|x|x|o|x|x|
 
 `*`: unavailable without cgo
 
