@@ -32,7 +32,7 @@ func Get() (*CPU, error) {
 
 // CPU represents cpu statistics for darwin
 type CPU struct {
-	User, System, Idle, Total float64
+	User, System, Idle, Total uint64
 }
 
 func collectCPUStats(out io.Reader) (*CPU, error) {
@@ -45,7 +45,7 @@ func collectCPUStats(out io.Reader) (*CPU, error) {
 
 	var cpu CPU
 	line := scanner.Text()
-	ret, err := fmt.Sscanf(line, "%f %f %f", &cpu.User, &cpu.System, &cpu.Idle)
+	ret, err := fmt.Sscanf(line, "%d %d %d", &cpu.User, &cpu.System, &cpu.Idle)
 	if err != nil || ret != 3 {
 		return nil, fmt.Errorf("unexpected output of iostat")
 	}
