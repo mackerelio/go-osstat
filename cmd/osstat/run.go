@@ -5,31 +5,31 @@ import (
 	"sync"
 )
 
-type Generator interface {
+type generator interface {
 	Get()
 	Error() error
 	Print(out io.Writer)
 }
 
-func Run(args []string, out io.Writer) []error {
+func run(args []string, out io.Writer) []error {
 	var wg sync.WaitGroup
 
-	for _, generator := range generators {
+	for _, gen := range generators {
 		wg.Add(1)
-		go func(generator Generator) {
+		go func(gen generator) {
 			defer wg.Done()
-			generator.Get()
-		}(generator)
+			gen.Get()
+		}(gen)
 	}
 
 	wg.Wait()
 
 	var errs []error
-	for _, generator := range generators {
-		if err := generator.Error(); err != nil {
+	for _, gen := range generators {
+		if err := gen.Error(); err != nil {
 			errs = append(errs, err)
 		} else {
-			generator.Print(out)
+			gen.Print(out)
 		}
 	}
 	return errs

@@ -8,7 +8,7 @@ import (
 
 func TestRun(t *testing.T) {
 	out := bufio.NewWriter(new(bytes.Buffer))
-	errs := Run(nil, out)
+	errs := run(nil, out)
 	if errs != nil {
 		t.Errorf("error occured: %v", errs)
 	}
