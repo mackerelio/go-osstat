@@ -18,6 +18,7 @@ func TestGetNetwork(t *testing.T) {
 			t.Errorf("invalid network value: %+v", network)
 		}
 	}
+	t.Logf("networks value: %+v", networks)
 }
 
 func TestCollectNetworkStats(t *testing.T) {

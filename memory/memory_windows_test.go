@@ -14,4 +14,5 @@ func TestGetMemory(t *testing.T) {
 	if memory.Used <= 0 || memory.Total <= 0 || memory.Free <= 0 {
 		t.Errorf("invalid memory value: %+v", memory)
 	}
+	t.Logf("memory value: %+v", memory)
 }

@@ -14,4 +14,5 @@ func TestGetCPU(t *testing.T) {
 	if cpu.User <= 0 || cpu.System <= 0 || cpu.Idle <= 0 || cpu.Total <= 0 {
 		t.Errorf("invalid cpu value: %+v", cpu)
 	}
+	t.Logf("cpu value: %+v", cpu)
 }
