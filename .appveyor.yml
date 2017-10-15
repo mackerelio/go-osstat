@@ -8,7 +8,6 @@ environment:
 install:
   - go version
   - go env
-  - go get -d -v -t ./...
 
 build_script:
   - go get -d -v -t ./...
