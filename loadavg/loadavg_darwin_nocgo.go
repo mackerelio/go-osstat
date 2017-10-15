@@ -4,34 +4,29 @@ package loadavg
 
 import (
 	"fmt"
-	"io"
-	"os/exec"
+	"syscall"
+	"unsafe"
 )
 
 func get() (*Loadavg, error) {
-	cmd := exec.Command("sysctl", "-n", "vm.loadavg")
-	out, err := cmd.StdoutPipe()
+	ret, err := syscall.Sysctl("vm.loadavg")
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed in sysctl vm.loadavg: %s", err)
 	}
-	if err := cmd.Start(); err != nil {
-		return nil, err
-	}
-	loadavg, err := collectLoadavgStats(out)
-	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Wait(); err != nil {
-		return nil, err
-	}
-	return loadavg, nil
+	return collectLoadavgStats([]byte(ret))
 }
 
-func collectLoadavgStats(out io.Reader) (*Loadavg, error) {
-	var loadavg Loadavg
-	ret, err := fmt.Fscanf(out, "{ %f %f %f }", &loadavg.Loadavg1, &loadavg.Loadavg5, &loadavg.Loadavg15)
-	if err != nil || ret != 3 {
-		return nil, fmt.Errorf("unexpected output of sysctl -n vm.loadavg")
-	}
-	return &loadavg, nil
+// loadavg in sysctl.h
+type loadStruct struct {
+	Ldavg  [3]uint32
+	Fscale uint64
+}
+
+func collectLoadavgStats(out []byte) (*Loadavg, error) {
+	load := *(*loadStruct)(unsafe.Pointer(&out[0]))
+	return &Loadavg{
+		Loadavg1:  float64(load.Ldavg[0]) / float64(load.Fscale),
+		Loadavg5:  float64(load.Ldavg[1]) / float64(load.Fscale),
+		Loadavg15: float64(load.Ldavg[2]) / float64(load.Fscale),
+	}, nil
 }
