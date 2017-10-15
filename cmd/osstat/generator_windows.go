@@ -2,10 +2,10 @@
 
 package main
 
-var generators []Generators
+var generators []generator
 
 func init() {
-	generators = []Generator{
+	generators = []generator{
 		&cpuGenerator{},
 		&memoryGenerator{},
 		&networkGenerator{},
