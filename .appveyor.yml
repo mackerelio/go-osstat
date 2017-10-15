@@ -1,0 +1,16 @@
+version: "{build}"
+
+clone_folder: c:\gopath\src\github.com\mackerelio\go-osstat
+
+environment:
+  GOPATH: c:\gopath
+
+install:
+  - go version
+  - go env
+
+test_script:
+  - go get -d -v -t ./...
+  - go test -v ./...
+
+deploy: false
