@@ -31,8 +31,10 @@ func main() {
 ||loadavg|cpu|memory|network|disk|
 |:--:|:--:|:--:|:--:|:--:|:--:|
 |Linux|o|o|o|o|x|
-|Darwin|o|o|o|o|x|
+|Darwin|o|△`*`|o|o|x|
 |Windows|x|x|x|x|x|
+
+`*`: unavailable without cgo
 
 ## Note for counter values
 This library returns the counter value for cpu and network statistics by design. To get the cpu usage in percent or network traffic in kB/s, sleep for a while and calculate the difference.
