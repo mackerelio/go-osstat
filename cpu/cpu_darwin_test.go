@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestGetCpu(t *testing.T) {
+func TestGetCPU(t *testing.T) {
 	cpu, err := Get()
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)

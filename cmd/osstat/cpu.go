@@ -8,7 +8,7 @@ import (
 )
 
 type cpuGenerator struct {
-	cpu *cpu.Cpu
+	cpu *cpu.CPU
 	err error
 }
 

@@ -12,23 +12,23 @@ import (
 import "C"
 
 // Get cpu statistics
-func Get() (*Cpu, error) {
-	return collectCpuStats()
+func Get() (*CPU, error) {
+	return collectCPUStats()
 }
 
-// Cpu represents cpu statistics for darwin
-type Cpu struct {
+// CPU represents cpu statistics for darwin
+type CPU struct {
 	User, System, Idle, Nice, Total uint64
 }
 
-func collectCpuStats() (*Cpu, error) {
+func collectCPUStats() (*CPU, error) {
 	var cpuLoad C.host_cpu_load_info_data_t
 	var count C.mach_msg_type_number_t = C.HOST_CPU_LOAD_INFO_COUNT
 	ret := C.host_statistics(C.host_t(C.mach_host_self()), C.HOST_CPU_LOAD_INFO, C.host_info_t(unsafe.Pointer(&cpuLoad)), &count)
 	if ret != C.KERN_SUCCESS {
 		return nil, fmt.Errorf("%d", ret)
 	}
-	cpu := Cpu{
+	cpu := CPU{
 		User:   uint64(cpuLoad.cpu_ticks[C.CPU_STATE_USER]),
 		System: uint64(cpuLoad.cpu_ticks[C.CPU_STATE_SYSTEM]),
 		Idle:   uint64(cpuLoad.cpu_ticks[C.CPU_STATE_IDLE]),

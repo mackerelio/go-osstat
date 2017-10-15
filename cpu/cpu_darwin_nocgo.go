@@ -10,7 +10,7 @@ import (
 )
 
 // Get cpu statistics
-func Get() (*Cpu, error) {
+func Get() (*CPU, error) {
 	return nil, fmt.Errorf("cpu statistics for darwin is unavailable yet")
 	cmd := exec.Command("iostat", "-n0", "-c2")
 	out, err := cmd.StdoutPipe()
@@ -20,7 +20,7 @@ func Get() (*Cpu, error) {
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
-	cpu, err := collectCpuStats(out)
+	cpu, err := collectCPUStats(out)
 	if err != nil {
 		return nil, err
 	}
@@ -30,12 +30,12 @@ func Get() (*Cpu, error) {
 	return cpu, nil
 }
 
-// Cpu represents cpu statistics for darwin
-type Cpu struct {
+// CPU represents cpu statistics for darwin
+type CPU struct {
 	User, System, Idle, Total float64
 }
 
-func collectCpuStats(out io.Reader) (*Cpu, error) {
+func collectCPUStats(out io.Reader) (*CPU, error) {
 	scanner := bufio.NewScanner(out)
 	for i := 0; i < 4; i++ {
 		if !scanner.Scan() {
@@ -43,7 +43,7 @@ func collectCpuStats(out io.Reader) (*Cpu, error) {
 		}
 	}
 
-	var cpu Cpu
+	var cpu CPU
 	line := scanner.Text()
 	ret, err := fmt.Sscanf(line, "%f %f %f", &cpu.User, &cpu.System, &cpu.Idle)
 	if err != nil || ret != 3 {
