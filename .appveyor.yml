@@ -12,11 +12,11 @@ install:
 
 build_script:
   - go get -d -v -t ./...
-  - cd cmd\osstat
-  - go install
 
 test_script:
   - go test -v ./...
+  - cd cmd\osstat
+  - go install
   - osstat
 
 deploy: false
