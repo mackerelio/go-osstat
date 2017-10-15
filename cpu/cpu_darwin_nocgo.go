@@ -11,6 +11,7 @@ import (
 
 // Get cpu statistics
 func Get() (*Cpu, error) {
+	return nil, fmt.Errorf("cpu statistics for darwin is unavailable yet")
 	cmd := exec.Command("iostat", "-n0", "-c2")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
