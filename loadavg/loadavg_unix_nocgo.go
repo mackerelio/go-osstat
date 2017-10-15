@@ -1,4 +1,5 @@
 // +build linux,!cgo
+// +build !darwin
 
 package loadavg
 
