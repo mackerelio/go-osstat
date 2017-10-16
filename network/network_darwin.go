@@ -13,6 +13,7 @@ import (
 
 // Get network statistics
 func Get() ([]NetworkStats, error) {
+	// Reference: man 1 netstat
 	cmd := exec.Command("netstat", "-bni")
 	out, err := cmd.StdoutPipe()
 	if err != nil {

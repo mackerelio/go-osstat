@@ -13,6 +13,7 @@ import (
 
 // Get memory statistics
 func Get() (*MemoryStats, error) {
+	// Reference: man 5 proc, Documentation/filesystems/proc.txt in Linux source code
 	file, err := os.Open("/proc/meminfo")
 	if err != nil {
 		return nil, err

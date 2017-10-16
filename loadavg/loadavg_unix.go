@@ -9,6 +9,7 @@ import (
 // #include <stdlib.h>
 import "C"
 
+// Reference: man 3 getloadavg
 func get() (*Loadavg, error) {
 	var loadavgs [3]C.double
 	ret := C.getloadavg(&loadavgs[0], 3)

@@ -13,6 +13,7 @@ import (
 
 // Get disk I/O statistics
 func Get() ([]DiskStats, error) {
+	// Reference: Documentation/iostats.txt in the source of Linux
 	file, err := os.Open("/proc/diskstats")
 	if err != nil {
 		return nil, err
@@ -35,7 +36,6 @@ func collectDiskStats(out io.Reader) ([]DiskStats, error) {
 		if len(fields) < 14 {
 			continue
 		}
-		// Reference: Documentation/iostats.txt in the source of Linux
 		name := fields[2]
 		readsCompleted, err := strconv.ParseUint(fields[3], 10, 64)
 		if err != nil {

@@ -9,6 +9,7 @@ import (
 )
 
 func get() (*Loadavg, error) {
+	// Reference: man 5 proc, loadavg_proc_show in Linux source code
 	file, err := os.Open("/proc/loadavg")
 	if err != nil {
 		return nil, err

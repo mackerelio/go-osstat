@@ -17,12 +17,13 @@ func get() (*Loadavg, error) {
 	return collectLoadavgStats([]byte(ret))
 }
 
-// loadavg in sysctl.h
+// loadavg in sys/sysctl.h
 type loadStruct struct {
 	Ldavg  [3]uint32
 	Fscale uint64
 }
 
+// Reference: sys/sysctl.h
 func collectLoadavgStats(out []byte) (*Loadavg, error) {
 	load := *(*loadStruct)(unsafe.Pointer(&out[0]))
 	return &Loadavg{

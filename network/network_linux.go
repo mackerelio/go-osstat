@@ -13,6 +13,7 @@ import (
 
 // Get network statistics
 func Get() ([]NetworkStats, error) {
+	// Reference: man 5 proc, Documentation/filesystems/proc.txt in Linux source code
 	file, err := os.Open("/proc/net/dev")
 	if err != nil {
 		return nil, err
@@ -33,6 +34,7 @@ func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 	rxBytesIdx, txBytesIdx := 1, 9
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
+		// Reference: dev_seq_printf_stats in Linux source code
 		if len(fields) < 17 || len(fields) > 0 && !strings.HasSuffix(fields[0], ":") {
 			continue
 		}

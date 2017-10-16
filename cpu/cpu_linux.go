@@ -14,6 +14,7 @@ import (
 
 // Get cpu statistics
 func Get() (*CPUStats, error) {
+	// Reference: man 5 proc, Documentation/filesystems/proc.txt in Linux source code
 	file, err := os.Open("/proc/stat")
 	if err != nil {
 		return nil, err

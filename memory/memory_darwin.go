@@ -15,6 +15,7 @@ import (
 
 // Get memory statistics
 func Get() (*MemoryStats, error) {
+	// Reference: man 1 vm_stat
 	cmd := exec.Command("vm_stat")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
@@ -31,6 +32,7 @@ func Get() (*MemoryStats, error) {
 		return nil, err
 	}
 
+	// Reference: sys/sysctl.h, man 3 sysctl, sysctl vm.swapusage
 	ret, err := syscall.Sysctl("vm.swapusage")
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.swapusage: %s", err)
@@ -96,7 +98,7 @@ func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	return &memory, nil
 }
 
-// xsw_usage in sysctl.h
+// xsw_usage in sys/sysctl.h
 type swapUsage struct {
 	Total     uint64
 	Avail     uint64
