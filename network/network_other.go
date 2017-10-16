@@ -8,12 +8,12 @@ import (
 )
 
 // Get network statistics
-func Get() ([]Network, error) {
+func Get() ([]NetworkStats, error) {
 	return nil, fmt.Errorf("network statistics not implemented for: %s", runtime.GOOS)
 }
 
-// Network represents network statistics
-type Network struct {
+// NetworkStats represents network statistics
+type NetworkStats struct {
 	Name             string
 	RxBytes, TxBytes uint64
 }

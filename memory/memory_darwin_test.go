@@ -49,7 +49,7 @@ Swapouts:                                     0.
 		t.Fatalf("error should be nil but got: %v", err)
 	}
 	pageSize := 4096
-	expected := &Memory{
+	expected := &MemoryStats{
 		Total:    uint64((446975 + 2154445 + 1511468 + 8107 + 72827) * pageSize),
 		Used:     uint64((446975 + 2154445 + 1511468 + 8107 - (383371 + 677870)) * pageSize),
 		Cached:   uint64((383371 + 677870) * pageSize),

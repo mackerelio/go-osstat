@@ -35,7 +35,7 @@ softirq 10624366 42 5280893 11772 27757 826862 2 24721 2326791 28519 2097007
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := &CPU{
+	expected := &CPUStats{
 		User:      1415984,
 		Nice:      38486,
 		System:    429451,

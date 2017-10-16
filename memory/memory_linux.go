@@ -12,7 +12,7 @@ import (
 )
 
 // Get memory statistics
-func Get() (*Memory, error) {
+func Get() (*MemoryStats, error) {
 	file, err := os.Open("/proc/meminfo")
 	if err != nil {
 		return nil, err
@@ -21,14 +21,14 @@ func Get() (*Memory, error) {
 	return collectMemoryStats(file)
 }
 
-// Memory represents memory statistics for linux
-type Memory struct {
+// MemoryStats represents memory statistics for linux
+type MemoryStats struct {
 	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapCached, SwapFree uint64
 }
 
-func collectMemoryStats(out io.Reader) (*Memory, error) {
+func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	scanner := bufio.NewScanner(out)
-	var memory Memory
+	var memory MemoryStats
 	var buffers uint64
 	memStats := map[string]*uint64{
 		"MemTotal":   &memory.Total,

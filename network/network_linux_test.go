@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestGetnetwork(t *testing.T) {
+func TestGetNetwork(t *testing.T) {
 	networks, err := Get()
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
@@ -32,7 +32,7 @@ func TestCollectNetworkStats(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := []Network{
+	expected := []NetworkStats{
 		{"wlan0", 1188035151, 49774221},
 		{"eth0", 26054426, 12352148},
 	}

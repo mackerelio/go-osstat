@@ -14,7 +14,7 @@ import (
 )
 
 // Get memory statistics
-func Get() (*Memory, error) {
+func Get() (*MemoryStats, error) {
 	cmd := exec.Command("vm_stat")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
@@ -46,22 +46,22 @@ func Get() (*Memory, error) {
 	return memory, nil
 }
 
-// Memory represents memory statistics for darwin
-type Memory struct {
+// MemoryStats represents memory statistics for darwin
+type MemoryStats struct {
 	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapFree uint64
 }
 
 // References:
 //   - https://support.apple.com/en-us/HT201464#memory
-//   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemory/Articles/AboutMemory.html
+//   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemoryStats/Articles/AboutMemoryStats.html
 //   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
-func collectMemoryStats(out io.Reader) (*Memory, error) {
+func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	scanner := bufio.NewScanner(out)
 	if !scanner.Scan() { // skip the first line
 		return nil, fmt.Errorf("failed to scan output of vm_stat")
 	}
 
-	var memory Memory
+	var memory MemoryStats
 	var speculative, wired, purgeable, fileBacked, compressed uint64
 	memStats := map[string]*uint64{
 		"Pages free":                   &memory.Free,

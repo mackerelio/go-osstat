@@ -39,7 +39,7 @@ en2   1500  <Link#6>    4a:00:00:aa:aa:aa        0     0          0        0    
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := []Network{
+	expected := []NetworkStats{
 		{"gif0", 0, 0},
 		{"stf0", 0, 0},
 		{"en0", 18096041919, 8602191509},

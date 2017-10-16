@@ -12,7 +12,7 @@ import (
 )
 
 // Get network statistics
-func Get() ([]Network, error) {
+func Get() ([]NetworkStats, error) {
 	cmd := exec.Command("netstat", "-bni")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
@@ -31,19 +31,19 @@ func Get() ([]Network, error) {
 	return networks, nil
 }
 
-// Network represents network statistics for darwin
-type Network struct {
+// NetworkStats represents network statistics for darwin
+type NetworkStats struct {
 	Name             string
 	RxBytes, TxBytes uint64
 }
 
-func collectNetworkStats(out io.Reader) ([]Network, error) {
+func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 	scanner := bufio.NewScanner(out)
 	if !scanner.Scan() { // skip the first line
 		return nil, fmt.Errorf("failed to scan output of netstat")
 	}
 
-	var networks []Network
+	var networks []NetworkStats
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		name := strings.TrimSuffix(fields[0], "*")
@@ -62,7 +62,7 @@ func collectNetworkStats(out io.Reader) ([]Network, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse Obytes of %s", name)
 		}
-		networks = append(networks, Network{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
+		networks = append(networks, NetworkStats{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan error for netstat: %s", err)
