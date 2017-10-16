@@ -87,7 +87,7 @@ func collectMemoryStats(out io.Reader) (*Memory, error) {
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("scan error for vm_stat: %s", err)
 	}
 
 	memory.Cached = purgeable + fileBacked

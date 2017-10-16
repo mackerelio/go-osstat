@@ -55,7 +55,7 @@ func collectNetworkStats(out io.Reader) ([]Network, error) {
 		networks = append(networks, Network{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("scan error for /proc/net/dev: %s", err)
 	}
 
 	return networks, nil

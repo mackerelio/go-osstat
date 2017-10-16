@@ -4,6 +4,7 @@ package memory
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -58,7 +59,7 @@ func collectMemoryStats(out io.Reader) (*Memory, error) {
 		}
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("scan error for /proc/meminfo: %s", err)
 	}
 
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
