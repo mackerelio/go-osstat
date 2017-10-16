@@ -37,7 +37,7 @@ func main() {
 *: unavailable without cgo
 
 ## Note for counter values
-This library returns the counter value for cpu and network statistics by design. To get the cpu usage in percent or network traffic in kB/s, sleep for a while and calculate the difference.
+This library returns the counter value for cpu, network and disk I/O statistics by design. To get the cpu usage in percent, network traffic in kB/s or disk IOPS, sleep for a while and calculate the difference.
 
 ```go
 package main
