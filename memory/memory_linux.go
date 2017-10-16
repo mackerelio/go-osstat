@@ -18,11 +18,7 @@ func Get() (*Memory, error) {
 		return nil, err
 	}
 	defer file.Close()
-	memory, err := collectMemoryStats(file)
-	if err != nil {
-		return nil, err
-	}
-	return memory, nil
+	return collectMemoryStats(file)
 }
 
 // Memory represents memory statistics for linux

@@ -18,11 +18,7 @@ func Get() ([]Network, error) {
 		return nil, err
 	}
 	defer file.Close()
-	networks, err := collectNetworkStats(file)
-	if err != nil {
-		return nil, err
-	}
-	return networks, nil
+	return collectNetworkStats(file)
 }
 
 // Network represents network statistics for linux

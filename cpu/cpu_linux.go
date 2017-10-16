@@ -19,11 +19,7 @@ func Get() (*CPU, error) {
 		return nil, err
 	}
 	defer file.Close()
-	cpu, err := collectCPUStats(file)
-	if err != nil {
-		return nil, err
-	}
-	return cpu, nil
+	return collectCPUStats(file)
 }
 
 // CPU represents cpu statistics for linux
