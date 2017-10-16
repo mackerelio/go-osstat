@@ -8,8 +8,7 @@ go:
 
 script:
   - make test
-  - cd cmd/osstat && go install
-  - osstat
+  - cd cmd/osstat && go build && ./osstat
 
 os:
   - linux

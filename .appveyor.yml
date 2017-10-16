@@ -14,8 +14,6 @@ build_script:
 
 test_script:
   - go test -v ./...
-  - cd cmd\osstat
-  - go install
-  - osstat
+  - cd cmd\osstat && go build && .\osstat
 
 deploy: false
