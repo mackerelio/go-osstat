@@ -52,7 +52,7 @@ func collectDiskStats(out io.Reader) ([]DiskStats, error) {
 		})
 	}
 	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("scan error for /proc/net/dev: %s", err)
+		return nil, fmt.Errorf("scan error for /proc/diskstats: %s", err)
 	}
 	return diskStats, nil
 }
