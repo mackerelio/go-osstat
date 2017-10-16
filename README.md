@@ -28,9 +28,9 @@ func main() {
 
 ## Supported OS
 
-||loadavg|cpu|memory|network|disk|
+||loadavg|cpu|memory|network|disk i/o|
 |:--:|:--:|:--:|:--:|:--:|:--:|
-|Linux|o|o|o|o|x|
+|Linux|o|o|o|o|o|
 |Darwin|o|△<sup>*</sup>|o|o|x|
 |Windows|x|x|o|x|x|
 
