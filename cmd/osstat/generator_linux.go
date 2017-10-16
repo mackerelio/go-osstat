@@ -1,5 +1,3 @@
-// +build !windows,!linux,!darwin darwin,cgo
-
 package main
 
 var generators []generator
@@ -9,6 +7,7 @@ func init() {
 		&loadavgGenerator{},
 		&cpuGenerator{},
 		&memoryGenerator{},
+		&diskGenerator{},
 		&networkGenerator{},
 	}
 }
