@@ -39,6 +39,6 @@ func TestCollectDiskStats(t *testing.T) {
 		{"dm-2", 2022, 30822403},
 	}
 	if !reflect.DeepEqual(got, expected) {
-		t.Errorf("invalid Disk value: %+v (expected: %+v)", got, expected)
+		t.Errorf("invalid disk value: %+v (expected: %+v)", got, expected)
 	}
 }
