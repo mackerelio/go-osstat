@@ -66,7 +66,7 @@ func collectCPUStats(out io.Reader) (*CPU, error) {
 		cpu.Total += val
 	}
 
-	// Since cpustat[CPUTIME_USER] includes cpustat[CPUTIME_GUEST], substruct the duplicated values from total.
+	// Since cpustat[CPUTIME_USER] includes cpustat[CPUTIME_GUEST], subtract the duplicated values from total.
 	// https://github.com/torvalds/linux/blob/4ec9f7a18/kernel/sched/cputime.c#L151-L158
 	cpu.Total -= cpu.Guest
 	// cpustat[CPUTIME_NICE] includes cpustat[CPUTIME_GUEST_NICE]
