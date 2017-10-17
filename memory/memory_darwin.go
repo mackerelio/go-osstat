@@ -59,8 +59,12 @@ type MemoryStats struct {
 //   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
 func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	scanner := bufio.NewScanner(out)
-	if !scanner.Scan() { // skip the first line
+	if !scanner.Scan() {
 		return nil, fmt.Errorf("failed to scan output of vm_stat")
+	}
+	line := scanner.Text()
+	if !strings.HasPrefix(line, "Mach Virtual Memory Statistics:") {
+		return nil, fmt.Errorf("unexpected output of vm_stat: %s", line)
 	}
 
 	var memory MemoryStats
