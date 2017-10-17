@@ -40,7 +40,6 @@ type NetworkStats struct {
 
 func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 	scanner := bufio.NewScanner(out)
-	scanner.Split(bufio.ScanLines)
 	if !scanner.Scan() {
 		return nil, fmt.Errorf("failed to scan output of netstat")
 	}
