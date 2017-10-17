@@ -24,17 +24,17 @@ func Get() (*MemoryStats, error) {
 
 // MemoryStats represents memory statistics for linux
 type MemoryStats struct {
-	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapCached, SwapFree uint64
+	Total, Used, Buffers, Cached, Free, Active, Inactive,
+	SwapTotal, SwapUsed, SwapCached, SwapFree uint64
 }
 
 func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	scanner := bufio.NewScanner(out)
 	var memory MemoryStats
-	var buffers uint64
 	memStats := map[string]*uint64{
 		"MemTotal":   &memory.Total,
 		"MemFree":    &memory.Free,
-		"Buffers":    &buffers,
+		"Buffers":    &memory.Buffers,
 		"Cached":     &memory.Cached,
 		"Active":     &memory.Active,
 		"Inactive":   &memory.Inactive,
@@ -60,6 +60,6 @@ func collectMemoryStats(out io.Reader) (*MemoryStats, error) {
 	}
 
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
-	memory.Used = memory.Total - memory.Free - buffers - memory.Cached
+	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached
 	return &memory, nil
 }

@@ -74,6 +74,7 @@ DirectMap2M:      888832 kB
 	expected := &MemoryStats{
 		Total:      uint64(1929620 * 1024),
 		Used:       uint64(1298444 * 1024),
+		Buffers:    uint64(81744 * 1024),
 		Cached:     uint64(435712 * 1024),
 		Free:       uint64(113720 * 1024),
 		Active:     uint64(817412 * 1024),
