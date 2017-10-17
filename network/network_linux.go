@@ -31,7 +31,6 @@ type NetworkStats struct {
 func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 	scanner := bufio.NewScanner(out)
 	var networks []NetworkStats
-	rxBytesIdx, txBytesIdx := 1, 9
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		// Reference: dev_seq_printf_stats in Linux source code
@@ -42,11 +41,11 @@ func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 		if name == "lo" {
 			continue
 		}
-		rxBytes, err := strconv.ParseUint(fields[rxBytesIdx], 10, 64)
+		rxBytes, err := strconv.ParseUint(fields[1], 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse rxBytes of %s", name)
 		}
-		txBytes, err := strconv.ParseUint(fields[txBytesIdx], 10, 64)
+		txBytes, err := strconv.ParseUint(fields[9], 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse txBytes of %s", name)
 		}
@@ -55,6 +54,5 @@ func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan error for /proc/net/dev: %s", err)
 	}
-
 	return networks, nil
 }
