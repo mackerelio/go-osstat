@@ -15,7 +15,7 @@ func TestCollectLoadavgStats(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := &Loadavg{Loadavg1: 2.2294921875, Loadavg5: 2.4462890625, Loadavg15: 2.373046875}
+	expected := &Stats{Loadavg1: 2.2294921875, Loadavg5: 2.4462890625, Loadavg15: 2.373046875}
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("invalid loadavg value: %+v (expected: %+v)", got, expected)
 	}

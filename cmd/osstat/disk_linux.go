@@ -5,7 +5,7 @@ import (
 )
 
 type diskGenerator struct {
-	disks []disk.DiskStats
+	disks []disk.Stats
 	err   error
 }
 

@@ -14,7 +14,7 @@ var (
 )
 
 // Get memory statistics
-func Get() (*MemoryStats, error) {
+func Get() (*Stats, error) {
 	var memoryStatus memoryStatusEx
 	memoryStatus.Length = uint32(unsafe.Sizeof(memoryStatus))
 
@@ -23,7 +23,7 @@ func Get() (*MemoryStats, error) {
 		return nil, fmt.Errorf("failed in GlobalMemoryStatusEx: %s", err)
 	}
 
-	var memory MemoryStats
+	var memory Stats
 	memory.Free = memoryStatus.AvailPhys
 	memory.Total = memoryStatus.TotalPhys
 	memory.Used = memory.Total - memory.Free
@@ -47,7 +47,7 @@ type memoryStatusEx struct {
 	AvailExtendedVirtual uint64
 }
 
-// MemoryStats represents memory statistics for Windows
-type MemoryStats struct {
+// Stats represents memory statistics for Windows
+type Stats struct {
 	Total, Used, Free, PageFileTotal, PageFileFree, VirtualTotal, VirtualFree uint64
 }

@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func get() (*Loadavg, error) {
+func get() (*Stats, error) {
 	// Reference: man 5 proc, loadavg_proc_show in Linux source code
 	file, err := os.Open("/proc/loadavg")
 	if err != nil {
@@ -18,8 +18,8 @@ func get() (*Loadavg, error) {
 	return collectLoadavgStats(file)
 }
 
-func collectLoadavgStats(out io.Reader) (*Loadavg, error) {
-	var loadavg Loadavg
+func collectLoadavgStats(out io.Reader) (*Stats, error) {
+	var loadavg Stats
 	ret, err := fmt.Fscanf(out, "%f %f %f", &loadavg.Loadavg1, &loadavg.Loadavg5, &loadavg.Loadavg15)
 	if err != nil || ret != 3 {
 		return nil, fmt.Errorf("unexpected format of /proc/loadavg")

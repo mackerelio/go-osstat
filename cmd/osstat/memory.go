@@ -5,7 +5,7 @@ import (
 )
 
 type memoryGenerator struct {
-	memory *memory.MemoryStats
+	memory *memory.Stats
 	err    error
 }
 

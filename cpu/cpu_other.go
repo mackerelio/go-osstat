@@ -8,11 +8,11 @@ import (
 )
 
 // Get cpu statistics
-func Get() (*CPUStats, error) {
+func Get() (*Stats, error) {
 	return nil, fmt.Errorf("cpu statistics not implemented for: %s", runtime.GOOS)
 }
 
-// CPUStats represents cpu statistics
-type CPUStats struct {
+// Stats represents cpu statistics
+type Stats struct {
 	User, System, Idle, Nice, Total uint64
 }

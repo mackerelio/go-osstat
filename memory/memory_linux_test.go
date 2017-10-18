@@ -71,7 +71,7 @@ DirectMap2M:      888832 kB
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := &MemoryStats{
+	expected := &Stats{
 		Total:      uint64(1929620 * 1024),
 		Used:       uint64(1298444 * 1024),
 		Buffers:    uint64(81744 * 1024),

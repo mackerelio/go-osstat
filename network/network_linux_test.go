@@ -32,7 +32,7 @@ func TestCollectNetworkStats(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := []NetworkStats{
+	expected := []Stats{
 		{"wlan0", 1188035151, 49774221},
 		{"eth0", 26054426, 12352148},
 	}

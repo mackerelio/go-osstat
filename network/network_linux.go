@@ -12,7 +12,7 @@ import (
 )
 
 // Get network statistics
-func Get() ([]NetworkStats, error) {
+func Get() ([]Stats, error) {
 	// Reference: man 5 proc, Documentation/filesystems/proc.txt in Linux source code
 	file, err := os.Open("/proc/net/dev")
 	if err != nil {
@@ -22,15 +22,15 @@ func Get() ([]NetworkStats, error) {
 	return collectNetworkStats(file)
 }
 
-// NetworkStats represents network statistics for linux
-type NetworkStats struct {
+// Stats represents network statistics for linux
+type Stats struct {
 	Name             string
 	RxBytes, TxBytes uint64
 }
 
-func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
+func collectNetworkStats(out io.Reader) ([]Stats, error) {
 	scanner := bufio.NewScanner(out)
-	var networks []NetworkStats
+	var networks []Stats
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		// Reference: dev_seq_printf_stats in Linux source code
@@ -49,7 +49,7 @@ func collectNetworkStats(out io.Reader) ([]NetworkStats, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse txBytes of %s", name)
 		}
-		networks = append(networks, NetworkStats{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
+		networks = append(networks, Stats{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
 	}
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan error for /proc/net/dev: %s", err)

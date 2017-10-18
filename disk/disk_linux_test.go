@@ -29,7 +29,7 @@ func TestCollectDiskStats(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	expected := []DiskStats{
+	expected := []Stats{
 		{"xvda1", 750193, 16600606},
 		{"xvda2", 1641, 6365},
 		{"loop0", 0, 0},

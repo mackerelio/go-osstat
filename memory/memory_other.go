@@ -8,11 +8,11 @@ import (
 )
 
 // Get memory statistics
-func Get() (*MemoryStats, error) {
+func Get() (*Stats, error) {
 	return nil, fmt.Errorf("memory statistics not implemented for: %s", runtime.GOOS)
 }
 
-// MemoryStats represents memory statistics
-type MemoryStats struct {
+// Stats represents memory statistics
+type Stats struct {
 	Total, Used, Cached, Free, Active, Inactive, SwapTotal, SwapUsed, SwapFree uint64
 }

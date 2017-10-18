@@ -13,7 +13,7 @@ import (
 )
 
 // Get cpu statistics
-func Get() (*CPUStats, error) {
+func Get() (*Stats, error) {
 	// Reference: man 5 proc, Documentation/filesystems/proc.txt in Linux source code
 	file, err := os.Open("/proc/stat")
 	if err != nil {
@@ -23,8 +23,8 @@ func Get() (*CPUStats, error) {
 	return collectCPUStats(file)
 }
 
-// CPUStats represents cpu statistics for linux
-type CPUStats struct {
+// Stats represents cpu statistics for linux
+type Stats struct {
 	User, Nice, System, Idle, Iowait, Irq, Softirq, Steal, Guest, GuestNice uint64
 	Total, CPUCount                                                         uint64
 }
@@ -34,9 +34,9 @@ type cpuStat struct {
 	ptr  *uint64
 }
 
-func collectCPUStats(out io.Reader) (*CPUStats, error) {
+func collectCPUStats(out io.Reader) (*Stats, error) {
 	scanner := bufio.NewScanner(out)
-	var cpu CPUStats
+	var cpu Stats
 
 	cpuStats := []cpuStat{
 		{"user", &cpu.User},

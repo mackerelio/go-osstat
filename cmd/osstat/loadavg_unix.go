@@ -7,7 +7,7 @@ import (
 )
 
 type loadavgGenerator struct {
-	loadavg *loadavg.Loadavg
+	loadavg *loadavg.Stats
 	err     error
 }
 

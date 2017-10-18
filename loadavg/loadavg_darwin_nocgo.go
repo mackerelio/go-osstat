@@ -9,7 +9,7 @@ import (
 	"unsafe"
 )
 
-func get() (*Loadavg, error) {
+func get() (*Stats, error) {
 	ret, err := syscall.Sysctl("vm.loadavg")
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.loadavg: %s", err)
@@ -24,9 +24,9 @@ type loadStruct struct {
 }
 
 // Reference: sys/sysctl.h
-func collectLoadavgStats(out []byte) (*Loadavg, error) {
+func collectLoadavgStats(out []byte) (*Stats, error) {
 	load := *(*loadStruct)(unsafe.Pointer(&out[0]))
-	return &Loadavg{
+	return &Stats{
 		Loadavg1:  float64(load.Ldavg[0]) / float64(load.Fscale),
 		Loadavg5:  float64(load.Ldavg[1]) / float64(load.Fscale),
 		Loadavg15: float64(load.Ldavg[2]) / float64(load.Fscale),

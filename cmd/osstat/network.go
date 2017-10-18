@@ -5,7 +5,7 @@ import (
 )
 
 type networkGenerator struct {
-	networks []network.NetworkStats
+	networks []network.Stats
 	err      error
 }
 

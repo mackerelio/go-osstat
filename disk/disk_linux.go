@@ -12,7 +12,7 @@ import (
 )
 
 // Get disk I/O statistics
-func Get() ([]DiskStats, error) {
+func Get() ([]Stats, error) {
 	// Reference: Documentation/iostats.txt in the source of Linux
 	file, err := os.Open("/proc/diskstats")
 	if err != nil {
@@ -22,15 +22,15 @@ func Get() ([]DiskStats, error) {
 	return collectDiskStats(file)
 }
 
-// DiskStats represents disk I/O statistics for linux
-type DiskStats struct {
+// Stats represents disk I/O statistics for linux
+type Stats struct {
 	Name                            string
 	ReadsCompleted, WritesCompleted uint64
 }
 
-func collectDiskStats(out io.Reader) ([]DiskStats, error) {
+func collectDiskStats(out io.Reader) ([]Stats, error) {
 	scanner := bufio.NewScanner(out)
-	var diskStats []DiskStats
+	var diskStats []Stats
 	for scanner.Scan() {
 		fields := strings.Fields(scanner.Text())
 		if len(fields) < 14 {
@@ -45,7 +45,7 @@ func collectDiskStats(out io.Reader) ([]DiskStats, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse writes completed of %s", name)
 		}
-		diskStats = append(diskStats, DiskStats{
+		diskStats = append(diskStats, Stats{
 			Name:            name,
 			ReadsCompleted:  readsCompleted,
 			WritesCompleted: writesCompleted,

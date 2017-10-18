@@ -1,11 +1,11 @@
 package loadavg
 
 // Get load average
-func Get() (*Loadavg, error) {
+func Get() (*Stats, error) {
 	return get()
 }
 
-// Loadavg represents load average values
-type Loadavg struct {
+// Stats represents load average values
+type Stats struct {
 	Loadavg1, Loadavg5, Loadavg15 float64
 }
