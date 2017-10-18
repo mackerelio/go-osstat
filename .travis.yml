@@ -7,7 +7,7 @@ go:
   - 1.9
 
 script:
-  - make test
+  - make all
   - cd cmd/osstat && go build && ./osstat
 
 os:
