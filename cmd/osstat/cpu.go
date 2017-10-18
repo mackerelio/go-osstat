@@ -3,9 +3,6 @@
 package main
 
 import (
-	"fmt"
-	"io"
-
 	"github.com/mackerelio/go-osstat/cpu"
 )
 
@@ -27,10 +24,10 @@ func (gen *cpuGenerator) Error() error {
 	return gen.err
 }
 
-func (gen *cpuGenerator) Print(out io.Writer) {
+func (gen *cpuGenerator) Print(out chan<- value) {
 	cpu := gen.cpu
-	fmt.Fprintf(out, "cpu.user\t%d\t-\n", cpu.User)
-	fmt.Fprintf(out, "cpu.system\t%d\t-\n", cpu.System)
-	fmt.Fprintf(out, "cpu.idle\t%d\t-\n", cpu.Idle)
-	fmt.Fprintf(out, "cpu.total\t%d\t-\n", cpu.Total)
+	out <- value{"cpu.user", cpu.User, "-"}
+	out <- value{"cpu.system", cpu.System, "-"}
+	out <- value{"cpu.idle", cpu.Idle, "-"}
+	out <- value{"cpu.total", cpu.Total, "-"}
 }

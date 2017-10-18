@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"io"
-
 	"github.com/mackerelio/go-osstat/disk"
 )
 
@@ -25,9 +22,9 @@ func (gen *diskGenerator) Error() error {
 	return gen.err
 }
 
-func (gen *diskGenerator) Print(out io.Writer) {
+func (gen *diskGenerator) Print(out chan<- value) {
 	for _, disk := range gen.disks {
-		fmt.Fprintf(out, "disk.%s.reads\t%d\t-\n", disk.Name, disk.ReadsCompleted)
-		fmt.Fprintf(out, "disk.%s.writes\t%d\t-\n", disk.Name, disk.WritesCompleted)
+		out <- value{"disk." + disk.Name + ".reads", disk.ReadsCompleted, "-"}
+		out <- value{"disk." + disk.Name + ".writes", disk.WritesCompleted, "-"}
 	}
 }

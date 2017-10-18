@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"sync"
 )
@@ -8,7 +9,13 @@ import (
 type generator interface {
 	Get()
 	Error() error
-	Print(out io.Writer)
+	Print(out chan<- value)
+}
+
+type value struct {
+	name  string
+	value interface{}
+	unit  string
 }
 
 func run(args []string, out io.Writer) []error {
@@ -24,13 +31,31 @@ func run(args []string, out io.Writer) []error {
 
 	wg.Wait()
 
+	c := make(chan value)
+	done := make(chan struct{})
+	defer close(done)
+
+	go func() {
+		for {
+			select {
+			case v := <-c:
+				fmt.Fprintf(out, "%s\t%v\t%s\n", v.name, v.value, v.unit)
+			case <-done:
+				close(c)
+				return
+			}
+		}
+	}()
+
 	var errs []error
 	for _, gen := range generators {
 		if err := gen.Error(); err != nil {
 			errs = append(errs, err)
 		} else {
-			gen.Print(out)
+			gen.Print(c)
 		}
 	}
+	done <- struct{}{}
+
 	return errs
 }

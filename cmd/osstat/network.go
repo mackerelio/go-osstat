@@ -1,9 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"io"
-
 	"github.com/mackerelio/go-osstat/network"
 )
 
@@ -25,9 +22,9 @@ func (gen *networkGenerator) Error() error {
 	return gen.err
 }
 
-func (gen *networkGenerator) Print(out io.Writer) {
+func (gen *networkGenerator) Print(out chan<- value) {
 	for _, network := range gen.networks {
-		fmt.Fprintf(out, "network.%s.rx_bytes\t%d\tbytes\n", network.Name, network.RxBytes)
-		fmt.Fprintf(out, "network.%s.tx_bytes\t%d\tbytes\n", network.Name, network.TxBytes)
+		out <- value{"network." + network.Name + ".rx_bytes", network.RxBytes, "bytes"}
+		out <- value{"network." + network.Name + ".tx_bytes", network.TxBytes, "bytes"}
 	}
 }
