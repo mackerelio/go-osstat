@@ -39,7 +39,7 @@ func run(args []string, out io.Writer) []error {
 		for {
 			select {
 			case v := <-c:
-				fmt.Fprintf(out, "%s\t%v\t%s\n", v.name, v.value, v.unit)
+				fmt.Fprintf(out, "%-25s %-14v %s\n", v.name, v.value, v.unit)
 			case <-done:
 				close(c)
 				return
