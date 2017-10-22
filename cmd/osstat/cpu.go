@@ -12,12 +12,7 @@ type cpuGenerator struct {
 }
 
 func (gen *cpuGenerator) Get() {
-	cpu, err := cpu.Get()
-	if err != nil {
-		gen.err = err
-		return
-	}
-	gen.cpu = cpu
+	gen.cpu, gen.err = cpu.Get()
 }
 
 func (gen *cpuGenerator) Error() error {

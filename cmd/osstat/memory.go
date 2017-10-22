@@ -10,12 +10,7 @@ type memoryGenerator struct {
 }
 
 func (gen *memoryGenerator) Get() {
-	memory, err := memory.Get()
-	if err != nil {
-		gen.err = err
-		return
-	}
-	gen.memory = memory
+	gen.memory, gen.err = memory.Get()
 }
 
 func (gen *memoryGenerator) Error() error {

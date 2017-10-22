@@ -10,12 +10,7 @@ type diskGenerator struct {
 }
 
 func (gen *diskGenerator) Get() {
-	disks, err := disk.Get()
-	if err != nil {
-		gen.err = err
-		return
-	}
-	gen.disks = disks
+	gen.disks, gen.err = disk.Get()
 }
 
 func (gen *diskGenerator) Error() error {

@@ -10,12 +10,7 @@ type networkGenerator struct {
 }
 
 func (gen *networkGenerator) Get() {
-	networks, err := network.Get()
-	if err != nil {
-		gen.err = err
-		return
-	}
-	gen.networks = networks
+	gen.networks, gen.err = network.Get()
 }
 
 func (gen *networkGenerator) Error() error {

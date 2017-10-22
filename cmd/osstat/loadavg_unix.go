@@ -12,12 +12,7 @@ type loadavgGenerator struct {
 }
 
 func (gen *loadavgGenerator) Get() {
-	loadavg, err := loadavg.Get()
-	if err != nil {
-		gen.err = err
-		return
-	}
-	gen.loadavg = loadavg
+	gen.loadavg, gen.err = loadavg.Get()
 }
 
 func (gen *loadavgGenerator) Error() error {
