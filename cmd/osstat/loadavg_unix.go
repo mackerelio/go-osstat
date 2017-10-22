@@ -26,7 +26,7 @@ func (gen *loadavgGenerator) Error() error {
 
 func (gen *loadavgGenerator) Print(out chan<- value) {
 	loadavg := gen.loadavg
-	out <- value{"loadavg.1", loadavg.Loadavg1, "-"}
-	out <- value{"loadavg.5", loadavg.Loadavg5, "-"}
-	out <- value{"loadavg.15", loadavg.Loadavg15, "-"}
+	out <- value{"loadavg.1m", loadavg.Loadavg1, "-"}
+	out <- value{"loadavg.5m", loadavg.Loadavg5, "-"}
+	out <- value{"loadavg.15m", loadavg.Loadavg15, "-"}
 }
