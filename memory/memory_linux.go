@@ -61,6 +61,7 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 	}
 
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
+	// This calculation may be changed in the future.
 	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached
 	return &memory, nil
 }
