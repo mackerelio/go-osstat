@@ -23,6 +23,7 @@ func TestCollectMemoryStats(t *testing.T) {
 	got, err := collectMemoryStats(strings.NewReader(
 		`MemTotal:        1929620 kB
 MemFree:          113720 kB
+Available:        533132 kB
 Buffers:           81744 kB
 Cached:           435712 kB
 SwapCached:          504 kB
@@ -77,6 +78,7 @@ DirectMap2M:      888832 kB
 		Buffers:    uint64(81744 * 1024),
 		Cached:     uint64(435712 * 1024),
 		Free:       uint64(113720 * 1024),
+		Available:  uint64(533132 * 1024),
 		Active:     uint64(817412 * 1024),
 		Inactive:   uint64(754140 * 1024),
 		SwapTotal:  uint64(1959932 * 1024),
