@@ -23,7 +23,7 @@ func TestCollectMemoryStats(t *testing.T) {
 	got, err := collectMemoryStats(strings.NewReader(
 		`MemTotal:        1929620 kB
 MemFree:          113720 kB
-Available:        533132 kB
+MemAvailable:     533132 kB
 Buffers:           81744 kB
 Cached:           435712 kB
 SwapCached:          504 kB
