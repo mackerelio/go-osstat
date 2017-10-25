@@ -25,8 +25,8 @@ func Get() (*Stats, error) {
 
 // Stats represents cpu statistics for linux
 type Stats struct {
-	User, Nice, System, Idle, Iowait, Irq, Softirq, Steal, Guest, GuestNice uint64
-	Total, CPUCount, StatCount                                              uint64
+	User, Nice, System, Idle, Iowait, Irq, Softirq, Steal, Guest, GuestNice, Total uint64
+	CPUCount, StatCount                                                            int
 }
 
 type cpuStat struct {
