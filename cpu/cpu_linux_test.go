@@ -13,7 +13,7 @@ func TestGetCPU(t *testing.T) {
 	if err != nil {
 		t.Fatalf("error should be nil but got: %v", err)
 	}
-	if cpu.User <= 0 || cpu.System <= 0 || cpu.Total <= 0 {
+	if cpu.User <= 0 || cpu.System <= 0 || cpu.Total <= 0 || cpu.StatCount < 4 {
 		t.Errorf("invalid cpu value: %+v", cpu)
 	}
 	t.Logf("cpu value: %+v", cpu)
@@ -48,6 +48,7 @@ softirq 10624366 42 5280893 11772 27757 826862 2 24721 2326791 28519 2097007
 		GuestNice: 0,
 		Total:     4397678,
 		CPUCount:  2,
+		StatCount: 10,
 	}
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("invalid cpu value: %+v (expected: %+v)", got, expected)

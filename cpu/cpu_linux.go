@@ -26,7 +26,7 @@ func Get() (*Stats, error) {
 // Stats represents cpu statistics for linux
 type Stats struct {
 	User, Nice, System, Idle, Iowait, Irq, Softirq, Steal, Guest, GuestNice uint64
-	Total, CPUCount                                                         uint64
+	Total, CPUCount, StatCount                                              uint64
 }
 
 type cpuStat struct {
@@ -54,7 +54,10 @@ func collectCPUStats(out io.Reader) (*Stats, error) {
 	if !scanner.Scan() {
 		return nil, fmt.Errorf("failed to scan /proc/stat")
 	}
-	for i, valStr := range strings.Fields(scanner.Text())[1:] {
+
+	valStrs := strings.Fields(scanner.Text())[1:]
+	cpu.StatCount = len(valStrs)
+	for i, valStr := range valStrs {
 		val, err := strconv.ParseUint(valStr, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan %s from /proc/stat", cpuStats[i].name)
