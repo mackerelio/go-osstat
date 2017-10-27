@@ -1,4 +1,4 @@
-// +build !darwin darwin,cgo
+// +build linux darwin,cgo
 
 package main
 

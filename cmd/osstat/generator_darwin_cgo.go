@@ -1,4 +1,4 @@
-// +build !windows,!linux,!darwin
+// +build darwin,!cgo
 
 package main
 
