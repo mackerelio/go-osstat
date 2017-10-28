@@ -1,4 +1,4 @@
-// +build darwin
+// +build darwin freebsd
 
 package network
 
@@ -40,11 +40,26 @@ type Stats struct {
 
 func collectNetworkStats(out io.Reader) ([]Stats, error) {
 	scanner := bufio.NewScanner(out)
+
 	if !scanner.Scan() {
 		return nil, fmt.Errorf("failed to scan output of netstat")
 	}
 	line := scanner.Text()
 	if !strings.HasPrefix(line, "Name") {
+		return nil, fmt.Errorf("unexpected output of netstat -bni: %s", line)
+	}
+	var rxBytesIdx, txBytesIdx int
+	fields := strings.Fields(line)
+	fieldsCount := len(fields)
+	for i, field := range fields {
+		switch field {
+		case "Ibytes":
+			rxBytesIdx = i
+		case "Obytes":
+			txBytesIdx = i
+		}
+	}
+	if rxBytesIdx == 0 || txBytesIdx == 0 {
 		return nil, fmt.Errorf("unexpected output of netstat -bni: %s", line)
 	}
 
@@ -55,9 +70,9 @@ func collectNetworkStats(out io.Reader) ([]Stats, error) {
 		if strings.HasPrefix(name, "lo") || !strings.HasPrefix(fields[2], "<Link#") {
 			continue
 		}
-		rxBytesIdx, txBytesIdx := 6, 9
-		if len(fields) == 10 {
-			rxBytesIdx, txBytesIdx = 5, 8
+		rxBytesIdx, txBytesIdx := rxBytesIdx, txBytesIdx
+		if len(fields) < fieldsCount { // Address can be empty
+			rxBytesIdx, txBytesIdx = rxBytesIdx-1, txBytesIdx-1
 		}
 		rxBytes, err := strconv.ParseUint(fields[rxBytesIdx], 10, 64)
 		if err != nil {
@@ -69,6 +84,7 @@ func collectNetworkStats(out io.Reader) ([]Stats, error) {
 		}
 		networks = append(networks, Stats{Name: name, RxBytes: rxBytes, TxBytes: txBytes})
 	}
+
 	if err := scanner.Err(); err != nil {
 		return nil, fmt.Errorf("scan error for netstat: %s", err)
 	}
