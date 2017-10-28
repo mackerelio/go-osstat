@@ -37,6 +37,7 @@ func Get() (*Stats, error) {
 		return nil, fmt.Errorf("failed in sysctl hw.physmem: %s", err)
 	}
 	memory.Total = binary.LittleEndian.Uint64([]byte(ret + "\x00"))
+	// Maybe this is incorrect... needs more research on memory statistics...
 	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Inactive
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
 
