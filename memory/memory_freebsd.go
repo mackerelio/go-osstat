@@ -37,13 +37,14 @@ func Get() (*Stats, error) {
 		return nil, fmt.Errorf("failed in sysctl hw.physmem: %s", err)
 	}
 	memory.Total = binary.LittleEndian.Uint64([]byte(ret + "\x00"))
+	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Inactive
 
 	return memory, nil
 }
 
 // Stats represents memory statistics for freebsd
 type Stats struct {
-	Total, Used, Buffers, Free, Active, Inactive, Wired,
+	Total, Used, Buffers, Cached, Free, Active, Inactive, Wired,
 	SwapTotal, SwapFree uint64
 }
 
