@@ -3,40 +3,18 @@
 package memory
 
 import (
-	"bufio"
 	"encoding/binary"
-	"errors"
 	"fmt"
-	"io"
-	"os/exec"
-	"strconv"
-	"strings"
 	"syscall"
 )
 
 // Get memory statistics
 func Get() (*Stats, error) {
-	cmd := exec.Command("top", "-b", "-n", "1")
-	out, err := cmd.StdoutPipe()
+	memory, err := collectMemoryStats()
 	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Start(); err != nil {
-		return nil, err
-	}
-	memory, err := collectMemoryStats(out)
-	if err != nil {
-		return nil, err
-	}
-	if err := cmd.Wait(); err != nil {
 		return nil, err
 	}
 
-	ret, err := syscall.Sysctl("hw.physmem")
-	if err != nil {
-		return nil, fmt.Errorf("failed in sysctl hw.physmem: %s", err)
-	}
-	memory.Total = binary.LittleEndian.Uint64([]byte(ret + "\x00"))
 	// Maybe this is incorrect... needs more research on memory statistics...
 	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Inactive
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
@@ -50,70 +28,41 @@ type Stats struct {
 	SwapTotal, SwapUsed, SwapFree uint64
 }
 
-func collectMemoryStats(out io.Reader) (*Stats, error) {
-	scanner := bufio.NewScanner(out)
+type memStat struct {
+	name  string
+	ptr   *uint64
+	scale *uint64
+}
+
+func collectMemoryStats() (*Stats, error) {
+	var pageSize uint64
+	one := uint64(1)
 
 	var memory Stats
-	memStats := map[string]*uint64{
-		"MemBuf":    &memory.Buffers,
-		"MemFree":   &memory.Free,
-		"MemActive": &memory.Active,
-		"MemInact":  &memory.Inactive,
-		"MemWired":  &memory.Wired,
-		"SwapTotal": &memory.SwapTotal,
-		"SwapFree":  &memory.SwapFree,
+	memStats := []memStat{
+		{"vm.stats.vm.v_page_size", &pageSize, &one},
+		{"hw.physmem", &memory.Total, &one},
+		{"vfs.bufspace", &memory.Buffers, &one},
+		{"vm.stats.vm.v_cache_count", &memory.Cached, &pageSize},
+		{"vm.stats.vm.v_free_count", &memory.Free, &pageSize},
+		{"vm.stats.vm.v_active_count", &memory.Active, &pageSize},
+		{"vm.stats.vm.v_inactive_count", &memory.Inactive, &pageSize},
+		{"vm.stats.vm.v_wire_count", &memory.Wired, &pageSize},
+		{"vm.swap_total", &memory.SwapTotal, &one},
 	}
+	// TODO: swap_free
 
-	var cnt int
-	for scanner.Scan() {
-		line := scanner.Text()
-		if !strings.HasPrefix(line, "Mem:") && !strings.HasPrefix(line, "Swap:") {
-			continue
+	for _, stat := range memStats {
+		ret, err := syscall.Sysctl(stat.name)
+		if err != nil {
+			return nil, fmt.Errorf("failed in sysctl %s: %s", stat.name, err)
 		}
-		cnt += 1
-		i := strings.IndexRune(line, ':')
-		prefix := line[:i]
-		stats := strings.Split(line[i+1:], ",")
-		for _, stat := range stats {
-			cs := strings.Fields(stat)
-			if len(cs) != 2 {
-				continue
-			}
-			if ptr := memStats[prefix+cs[1]]; ptr != nil {
-				if val, err := parseValue(cs[0]); err == nil {
-					*ptr = val
-				}
-			}
+		if len(ret) >= 7 {
+			*stat.ptr = binary.LittleEndian.Uint64([]byte(ret+"\x00")) * *stat.scale
+		} else {
+			*stat.ptr = uint64(binary.LittleEndian.Uint32([]byte(ret+"\x00"))) * *stat.scale
 		}
-		if cnt == 2 {
-			break
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return nil, fmt.Errorf("scan error for top -b -n 1: %s", err)
 	}
 
 	return &memory, nil
-}
-
-func parseValue(valStr string) (uint64, error) {
-	if len(valStr) < 1 {
-		return 0, errors.New("empty value")
-	}
-	var unit uint64
-	switch valStr[len(valStr)-1] {
-	case 'T':
-		unit = 1024 * 1024 * 1024 * 1024
-	case 'G':
-		unit = 1024 * 1024 * 1024
-	case 'M':
-		unit = 1024 * 1024
-	case 'K':
-		unit = 1024
-	default:
-		unit = 1
-	}
-	val, err := strconv.ParseUint(valStr[:len(valStr)-1], 10, 64)
-	return val * unit, err
 }
