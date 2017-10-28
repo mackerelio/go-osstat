@@ -38,6 +38,7 @@ func Get() (*Stats, error) {
 	}
 	memory.Total = binary.LittleEndian.Uint64([]byte(ret + "\x00"))
 	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Inactive
+	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
 
 	return memory, nil
 }
@@ -45,7 +46,7 @@ func Get() (*Stats, error) {
 // Stats represents memory statistics for freebsd
 type Stats struct {
 	Total, Used, Buffers, Cached, Free, Active, Inactive, Wired,
-	SwapTotal, SwapFree uint64
+	SwapTotal, SwapUsed, SwapFree uint64
 }
 
 func collectMemoryStats(out io.Reader) (*Stats, error) {
