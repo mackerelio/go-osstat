@@ -14,7 +14,7 @@ func get() (*Stats, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.loadavg: %s", err)
 	}
-	return collectLoadavgStats([]byte(ret))
+	return collectLoadavgStats([]byte(ret + "\x00"))
 }
 
 // loadavg in sys/sysctl.h

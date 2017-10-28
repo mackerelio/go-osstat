@@ -37,7 +37,7 @@ func Get() (*Stats, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.swapusage: %s", err)
 	}
-	swap, err := collectSwapStats(strings.NewReader(ret))
+	swap, err := collectSwapStats(strings.NewReader(ret + "\x00"))
 	if err != nil {
 		return nil, err
 	}
