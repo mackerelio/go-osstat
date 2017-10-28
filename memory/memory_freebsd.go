@@ -4,12 +4,14 @@ package memory
 
 import (
 	"bufio"
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"syscall"
 )
 
 // Get memory statistics
@@ -29,6 +31,13 @@ func Get() (*Stats, error) {
 	if err := cmd.Wait(); err != nil {
 		return nil, err
 	}
+
+	ret, err := syscall.Sysctl("hw.physmem")
+	if err != nil {
+		return nil, fmt.Errorf("failed in sysctl hw.physmem: %s", err)
+	}
+	memory.Total = binary.LittleEndian.Uint64([]byte(ret + "\x00"))
+
 	return memory, nil
 }
 
