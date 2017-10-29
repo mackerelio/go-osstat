@@ -16,7 +16,7 @@ func Get() (*Stats, error) {
 	}
 
 	// Maybe this is incorrect... needs more research on memory statistics...
-	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Inactive
+	memory.Used = memory.Total - memory.Free - memory.Cached - memory.Inactive
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
 
 	return memory, nil
@@ -24,7 +24,7 @@ func Get() (*Stats, error) {
 
 // Stats represents memory statistics for freebsd
 type Stats struct {
-	Total, Used, Buffers, Cached, Free, Active, Inactive, Wired,
+	Total, Used, Cached, Free, Active, Inactive, Wired,
 	SwapTotal, SwapUsed, SwapFree uint64
 }
 
@@ -42,7 +42,6 @@ func collectMemoryStats() (*Stats, error) {
 	memStats := []memStat{
 		{"vm.stats.vm.v_page_size", &pageSize, &one},
 		{"hw.physmem", &memory.Total, &one},
-		{"vfs.bufspace", &memory.Buffers, &one},
 		{"vm.stats.vm.v_cache_count", &memory.Cached, &pageSize},
 		{"vm.stats.vm.v_free_count", &memory.Free, &pageSize},
 		{"vm.stats.vm.v_active_count", &memory.Active, &pageSize},
