@@ -113,5 +113,8 @@ type swapUsage struct {
 }
 
 func collectSwapStats(out []byte) (*swapUsage, error) {
+	if len(out) != 32 {
+		return nil, fmt.Errorf("unexpected output of sysctl vm.swapusage: %v (len: %d)", out, len(out))
+	}
 	return (*swapUsage)(unsafe.Pointer(&out[0])), nil
 }

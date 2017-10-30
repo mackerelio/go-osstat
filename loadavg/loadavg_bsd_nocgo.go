@@ -26,6 +26,9 @@ type loadStruct struct {
 
 // Reference: sys/sysctl.h
 func collectLoadavgStats(out []byte) (*Stats, error) {
+	if len(out) != 24 {
+		return nil, fmt.Errorf("unexpected output of sysctl vm.loadavg: %v (len: %d)", out, len(out))
+	}
 	load := *(*loadStruct)(unsafe.Pointer(&out[0]))
 	return &Stats{
 		Loadavg1:  float64(load.Ldavg[0]) / float64(load.Fscale),
