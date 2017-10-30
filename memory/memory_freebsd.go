@@ -3,8 +3,8 @@
 package memory
 
 import (
-	"encoding/binary"
 	"fmt"
+	"unsafe"
 
 	"golang.org/x/sys/unix"
 )
@@ -58,9 +58,9 @@ func collectMemoryStats() (*Stats, error) {
 			return nil, fmt.Errorf("failed in sysctl %s: %s", stat.name, err)
 		}
 		if len(ret) == 8 {
-			*stat.ptr = binary.LittleEndian.Uint64(ret) * *stat.scale
+			*stat.ptr = *(*uint64)(unsafe.Pointer(&ret[0])) * *stat.scale
 		} else if len(ret) == 4 {
-			*stat.ptr = uint64(binary.LittleEndian.Uint32(ret)) * *stat.scale
+			*stat.ptr = uint64(*(*uint32)(unsafe.Pointer(&ret[0]))) * *stat.scale
 		} else {
 			return nil, fmt.Errorf("failed in sysctl %s: %s", stat.name, err)
 		}
