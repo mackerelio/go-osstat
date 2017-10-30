@@ -4,13 +4,12 @@ package memory
 
 import (
 	"bufio"
-	"bytes"
-	"encoding/binary"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"unsafe"
 
 	"golang.org/x/sys/unix"
 )
@@ -39,7 +38,7 @@ func Get() (*Stats, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.swapusage: %s", err)
 	}
-	swap, err := collectSwapStats(bytes.NewReader(ret))
+	swap, err := collectSwapStats(ret)
 	if err != nil {
 		return nil, err
 	}
@@ -113,11 +112,6 @@ type swapUsage struct {
 	Encrypted bool
 }
 
-func collectSwapStats(out io.Reader) (*swapUsage, error) {
-	var swap swapUsage
-	err := binary.Read(out, binary.LittleEndian, &swap)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read result of sysctl vm.swapusage: %s", err)
-	}
-	return &swap, nil
+func collectSwapStats(out []byte) (*swapUsage, error) {
+	return (*swapUsage)(unsafe.Pointer(&out[0])), nil
 }
