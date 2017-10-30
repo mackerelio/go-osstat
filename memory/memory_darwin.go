@@ -4,13 +4,15 @@ package memory
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
-	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
 // Get memory statistics
@@ -33,11 +35,11 @@ func Get() (*Stats, error) {
 	}
 
 	// Reference: sys/sysctl.h, man 3 sysctl, sysctl vm.swapusage
-	ret, err := syscall.Sysctl("vm.swapusage")
+	ret, err := unix.SysctlRaw("vm.swapusage")
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.swapusage: %s", err)
 	}
-	swap, err := collectSwapStats(strings.NewReader(ret + "\x00"))
+	swap, err := collectSwapStats(bytes.NewReader(ret))
 	if err != nil {
 		return nil, err
 	}

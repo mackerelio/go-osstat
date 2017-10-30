@@ -5,16 +5,17 @@ package loadavg
 
 import (
 	"fmt"
-	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/unix"
 )
 
 func get() (*Stats, error) {
-	ret, err := syscall.Sysctl("vm.loadavg")
+	ret, err := unix.SysctlRaw("vm.loadavg")
 	if err != nil {
 		return nil, fmt.Errorf("failed in sysctl vm.loadavg: %s", err)
 	}
-	return collectLoadavgStats([]byte(ret + "\x00"))
+	return collectLoadavgStats(ret)
 }
 
 // loadavg in sys/sysctl.h

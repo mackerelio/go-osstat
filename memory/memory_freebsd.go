@@ -5,7 +5,8 @@ package memory
 import (
 	"encoding/binary"
 	"fmt"
-	"syscall"
+
+	"golang.org/x/sys/unix"
 )
 
 // Get memory statistics
@@ -52,14 +53,14 @@ func collectMemoryStats() (*Stats, error) {
 	// TODO: swap_free
 
 	for _, stat := range memStats {
-		ret, err := syscall.Sysctl(stat.name)
+		ret, err := unix.SysctlRaw(stat.name)
 		if err != nil {
 			return nil, fmt.Errorf("failed in sysctl %s: %s", stat.name, err)
 		}
 		if len(ret) >= 7 {
-			*stat.ptr = binary.LittleEndian.Uint64([]byte(ret+"\x00")) * *stat.scale
+			*stat.ptr = binary.LittleEndian.Uint64(ret) * *stat.scale
 		} else {
-			*stat.ptr = uint64(binary.LittleEndian.Uint32([]byte(ret+"\x00"))) * *stat.scale
+			*stat.ptr = uint64(binary.LittleEndian.Uint32(ret)) * *stat.scale
 		}
 	}
 
