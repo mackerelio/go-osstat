@@ -16,7 +16,7 @@ import (
 func main() {
 	memory, err := memory.Get()
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "%s\n", err)
+		fmt.Fprintf(os.Stderr, "%s\n", err)
 		return
 	}
 	fmt.Printf("memory total: %d bytes\n", memory.Total)
@@ -55,13 +55,13 @@ import (
 func main() {
 	before, err := cpu.Get()
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "%s\n", err)
+		fmt.Fprintf(os.Stderr, "%s\n", err)
 		return
 	}
 	time.Sleep(time.Duration(1) * time.Second)
 	after, err := cpu.Get()
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "%s\n", err)
+		fmt.Fprintf(os.Stderr, "%s\n", err)
 		return
 	}
 	total := float64(after.Total - before.Total)
