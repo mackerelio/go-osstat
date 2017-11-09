@@ -33,6 +33,7 @@ func main() {
 |Linux|o|o|o|o|o|
 |Darwin|o|△<sup>*1</sup>|o|o|x|
 |FreeBSD|o|x|△<sup>*2</sup>|o|x|
+|NetBSD|o|x|x|o|x|
 |Windows|x|x|o|x|x|
 
 *1: unavailable without cgo
