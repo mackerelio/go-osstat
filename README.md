@@ -28,13 +28,13 @@ func main() {
 
 ## Supported OS
 
-||loadavg|cpu|memory|network|disk i/o|
-|:--:|:--:|:--:|:--:|:--:|:--:|
-|Linux|o|o|o|o|o|
-|Darwin|o|△<sup>*1</sup>|o|o|x|
-|FreeBSD|o|x|△<sup>*2</sup>|o|x|
-|NetBSD|o|x|x|o|x|
-|Windows|x|x|o|x|x|
+||loadavg|uptime|cpu|memory|network|disk i/o|
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+|Linux|o|o|o|o|o|o|
+|Darwin|o|o|△<sup>*1</sup>|o|o|x|
+|FreeBSD|o|o|x|△<sup>*2</sup>|o|x|
+|NetBSD|o|o|x|x|o|x|
+|Windows|x|o|x|o|x|x|
 
 *1: unavailable without cgo
 *2: WIP
