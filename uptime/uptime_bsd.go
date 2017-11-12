@@ -11,7 +11,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-func Get() (time.Duration, error) {
+func get() (time.Duration, error) {
 	out, err := unix.SysctlRaw("kern.boottime")
 	if err != nil {
 		return time.Duration(0), err
