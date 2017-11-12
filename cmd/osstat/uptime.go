@@ -22,5 +22,5 @@ func (gen *uptimeGenerator) Error() error {
 
 func (gen *uptimeGenerator) Print(out chan<- value) {
 	uptime := gen.uptime
-	out <- value{"uptime", fmt.Sprintf("%f", float64(uptime.Nanoseconds())/1e9), "s"}
+	out <- value{"uptime", fmt.Sprintf("%f", float64(uptime.Nanoseconds())/1e9), "seconds"}
 }
