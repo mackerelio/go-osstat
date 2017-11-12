@@ -11,7 +11,7 @@ var getTickCount = syscall.NewLazyDLL("kernel32.dll").NewProc("GetTickCount64")
 
 func Get() (time.Duration, error) {
 	ret, _, err := getTickCount.Call()
-	if err != nil {
+	if errno, ok := err.(syscall.Errno); !ok || errno != 0 {
 		return time.Duration(0), err
 	}
 	return time.Duration(ret) * time.Millisecond, nil
