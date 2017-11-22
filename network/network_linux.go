@@ -32,20 +32,24 @@ func collectNetworkStats(out io.Reader) ([]Stats, error) {
 	scanner := bufio.NewScanner(out)
 	var networks []Stats
 	for scanner.Scan() {
-		fields := strings.Fields(scanner.Text())
 		// Reference: dev_seq_printf_stats in Linux source code
-		if len(fields) < 17 || len(fields) > 0 && !strings.HasSuffix(fields[0], ":") {
+		kv := strings.SplitN(scanner.Text(), ":", 2)
+		if len(kv) != 2 {
 			continue
 		}
-		name := fields[0][:len(fields[0])-1]
+		fields := strings.Fields(kv[1])
+		if len(fields) < 16 {
+			continue
+		}
+		name := strings.TrimSpace(kv[0])
 		if name == "lo" {
 			continue
 		}
-		rxBytes, err := strconv.ParseUint(fields[1], 10, 64)
+		rxBytes, err := strconv.ParseUint(fields[0], 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse rxBytes of %s", name)
 		}
-		txBytes, err := strconv.ParseUint(fields[9], 10, 64)
+		txBytes, err := strconv.ParseUint(fields[8], 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse txBytes of %s", name)
 		}
