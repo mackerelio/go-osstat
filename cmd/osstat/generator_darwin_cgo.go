@@ -1,4 +1,4 @@
-// +build darwin,!cgo
+// +build darwin,cgo
 
 package main
 
@@ -8,6 +8,7 @@ func init() {
 	generators = []generator{
 		&loadavgGenerator{},
 		&uptimeGenerator{},
+		&cpuGenerator{},
 		&memoryGenerator{},
 		&networkGenerator{},
 	}
