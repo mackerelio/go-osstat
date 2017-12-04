@@ -6,6 +6,7 @@ go:
   - 1.9
 
 script:
+  - go version
   - make all
   - cd cmd/osstat && go build && ./osstat
 
