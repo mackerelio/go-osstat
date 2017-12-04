@@ -3,10 +3,10 @@ sudo: false
 language: go
 
 go:
-  - 1.8
   - 1.9
 
 script:
+  - go version
   - make all
   - cd cmd/osstat && go build && ./osstat
 
