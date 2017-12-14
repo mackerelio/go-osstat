@@ -74,7 +74,7 @@ func collectCPUStats(out io.Reader) (*Stats, error) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		if line != "" && line[0] == 'c' && line[1] == 'p' && line[2] == 'u' && unicode.IsDigit(rune(line[3])) {
+		if strings.HasPrefix(line, "cpu") && unicode.IsDigit(rune(line[3])) {
 			cpu.CPUCount++
 		}
 	}
