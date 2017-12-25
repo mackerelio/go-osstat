@@ -32,12 +32,11 @@ func main() {
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
 |Linux|o|o|o|o|o|o|
 |Darwin|o|o|△<sup>*1</sup>|o|o|x|
-|FreeBSD|o|o|x|△<sup>*2</sup>|o|x|
+|FreeBSD|o|o|x|o|o|x|
 |NetBSD|o|o|x|x|o|x|
 |Windows|x|o|x|o|x|x|
 
 *1: unavailable without cgo
-*2: WIP
 
 ## Note for counter values
 This library returns the counter value for cpu, network and disk I/O statistics by design. To get the cpu usage in percent, network traffic in kB/s or disk IOPS, sleep for a while and calculate the difference.
