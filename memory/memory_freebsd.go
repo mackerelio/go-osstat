@@ -73,6 +73,9 @@ func collectMemoryStats() (*Stats, error) {
 	if err != nil {
 		return nil, err
 	}
+	if err := cmd.Wait(); err != nil {
+		return nil, err
+	}
 
 	memory.Used = memory.Total - memory.Free - memory.Cached - memory.Inactive
 	memory.SwapFree = memory.SwapTotal - memory.SwapUsed
