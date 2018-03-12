@@ -20,8 +20,14 @@ func TestGetMemory(t *testing.T) {
 }
 
 func TestCollectMemoryStats(t *testing.T) {
-	got, err := collectMemoryStats(strings.NewReader(
-		`MemTotal:        1929620 kB
+	testCases := []struct {
+		name   string
+		input  string
+		expect *Stats
+	}{
+		{
+			name: "Disable MemAvailable",
+			input: `MemTotal:        1929620 kB
 MemFree:          113720 kB
 Buffers:           81744 kB
 Cached:           435712 kB
@@ -67,32 +73,25 @@ HugePages_Surp:        0
 Hugepagesize:       2048 kB
 DirectMap4k:       24568 kB
 DirectMap2M:      888832 kB
-`))
-	if err != nil {
-		t.Fatalf("error should be nil but got: %v", err)
-	}
-	expected := &Stats{
-		Total:               uint64(1929620 * 1024),
-		Used:                uint64(1298444 * 1024),
-		Buffers:             uint64(81744 * 1024),
-		Cached:              uint64(435712 * 1024),
-		Free:                uint64(113720 * 1024),
-		Active:              uint64(817412 * 1024),
-		Inactive:            uint64(754140 * 1024),
-		SwapTotal:           uint64(1959932 * 1024),
-		SwapUsed:            uint64(2432 * 1024),
-		SwapCached:          uint64(504 * 1024),
-		SwapFree:            uint64(1957500 * 1024),
-		MemAvailableEnabled: false,
-	}
-	if !reflect.DeepEqual(got, expected) {
-		t.Errorf("invalid memory value: %+v (expected: %+v)", got, expected)
-	}
-}
-
-func TestCollectMemoryStats_memAvailable(t *testing.T) {
-	got, err := collectMemoryStats(strings.NewReader(
-		`MemTotal:        1929620 kB
+`,
+			expect: &Stats{
+				Total:               uint64(1929620 * 1024),
+				Used:                uint64(1298444 * 1024),
+				Buffers:             uint64(81744 * 1024),
+				Cached:              uint64(435712 * 1024),
+				Free:                uint64(113720 * 1024),
+				Active:              uint64(817412 * 1024),
+				Inactive:            uint64(754140 * 1024),
+				SwapTotal:           uint64(1959932 * 1024),
+				SwapUsed:            uint64(2432 * 1024),
+				SwapCached:          uint64(504 * 1024),
+				SwapFree:            uint64(1957500 * 1024),
+				MemAvailableEnabled: false,
+			},
+		},
+		{
+			name: "Enable MemAvailable",
+			input: `MemTotal:        1929620 kB
 MemFree:          113720 kB
 MemAvailable:     533132 kB
 Buffers:           81744 kB
@@ -139,26 +138,34 @@ HugePages_Surp:        0
 Hugepagesize:       2048 kB
 DirectMap4k:       24568 kB
 DirectMap2M:      888832 kB
-`))
-	if err != nil {
-		t.Fatalf("error should be nil but got: %v", err)
+`,
+			expect: &Stats{
+				Total:               uint64(1929620 * 1024),
+				Used:                uint64(1396488 * 1024),
+				Buffers:             uint64(81744 * 1024),
+				Cached:              uint64(435712 * 1024),
+				Free:                uint64(113720 * 1024),
+				Available:           uint64(533132 * 1024),
+				Active:              uint64(817412 * 1024),
+				Inactive:            uint64(754140 * 1024),
+				SwapTotal:           uint64(1959932 * 1024),
+				SwapUsed:            uint64(2432 * 1024),
+				SwapCached:          uint64(504 * 1024),
+				SwapFree:            uint64(1957500 * 1024),
+				MemAvailableEnabled: true,
+			},
+		},
 	}
-	expected := &Stats{
-		Total:               uint64(1929620 * 1024),
-		Used:                uint64(1396488 * 1024),
-		Buffers:             uint64(81744 * 1024),
-		Cached:              uint64(435712 * 1024),
-		Free:                uint64(113720 * 1024),
-		Available:           uint64(533132 * 1024),
-		Active:              uint64(817412 * 1024),
-		Inactive:            uint64(754140 * 1024),
-		SwapTotal:           uint64(1959932 * 1024),
-		SwapUsed:            uint64(2432 * 1024),
-		SwapCached:          uint64(504 * 1024),
-		SwapFree:            uint64(1957500 * 1024),
-		MemAvailableEnabled: true,
-	}
-	if !reflect.DeepEqual(got, expected) {
-		t.Errorf("invalid memory value: %+v (expected: %+v)", got, expected)
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := collectMemoryStats(strings.NewReader(tc.input))
+			if err != nil {
+				t.Fatalf("error should be nil but got: %v", err)
+			}
+			if !reflect.DeepEqual(got, tc.expect) {
+				t.Errorf("%s: invalid memory value: %+v (expected: %+v)", tc.name, got, tc.expect)
+			}
+		})
 	}
 }
