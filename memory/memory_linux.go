@@ -26,6 +26,7 @@ func Get() (*Stats, error) {
 type Stats struct {
 	Total, Used, Buffers, Cached, Free, Available, Active, Inactive,
 	SwapTotal, SwapUsed, SwapCached, SwapFree uint64
+	MemAvailableEnabled bool
 }
 
 func collectMemoryStats(out io.Reader) (*Stats, error) {
@@ -49,10 +50,14 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 		if i < 0 {
 			continue
 		}
-		if ptr := memStats[line[:i]]; ptr != nil {
+		fld := line[:i]
+		if ptr := memStats[fld]; ptr != nil {
 			val := strings.TrimSpace(strings.TrimRight(line[i+1:], "kB"))
 			if v, err := strconv.ParseUint(val, 10, 64); err == nil {
 				*ptr = v * 1024
+			}
+			if fld == "MemAvailable" {
+				memory.MemAvailableEnabled = true
 			}
 		}
 	}
@@ -61,7 +66,12 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 	}
 
 	memory.SwapUsed = memory.SwapTotal - memory.SwapFree
-	// This calculation may be changed in the future.
-	memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached
+
+	if memory.MemAvailableEnabled {
+		memory.Used = memory.Total - memory.Available
+	} else {
+		memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached
+	}
+
 	return &memory, nil
 }
