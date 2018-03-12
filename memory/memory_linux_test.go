@@ -72,17 +72,18 @@ DirectMap2M:      888832 kB
 		t.Fatalf("error should be nil but got: %v", err)
 	}
 	expected := &Stats{
-		Total:      uint64(1929620 * 1024),
-		Used:       uint64(1298444 * 1024),
-		Buffers:    uint64(81744 * 1024),
-		Cached:     uint64(435712 * 1024),
-		Free:       uint64(113720 * 1024),
-		Active:     uint64(817412 * 1024),
-		Inactive:   uint64(754140 * 1024),
-		SwapTotal:  uint64(1959932 * 1024),
-		SwapUsed:   uint64(2432 * 1024),
-		SwapCached: uint64(504 * 1024),
-		SwapFree:   uint64(1957500 * 1024),
+		Total:               uint64(1929620 * 1024),
+		Used:                uint64(1298444 * 1024),
+		Buffers:             uint64(81744 * 1024),
+		Cached:              uint64(435712 * 1024),
+		Free:                uint64(113720 * 1024),
+		Active:              uint64(817412 * 1024),
+		Inactive:            uint64(754140 * 1024),
+		SwapTotal:           uint64(1959932 * 1024),
+		SwapUsed:            uint64(2432 * 1024),
+		SwapCached:          uint64(504 * 1024),
+		SwapFree:            uint64(1957500 * 1024),
+		MemAvailableEnabled: false,
 	}
 	if !reflect.DeepEqual(got, expected) {
 		t.Errorf("invalid memory value: %+v (expected: %+v)", got, expected)
