@@ -9,7 +9,7 @@ lint: testdeps
 
 testdeps:
 	go get -d -v -t ./...
-	go get github.com/golang/lint/golint
+	go get golang.org/x/lint/golint
 
 clean:
 	go clean
