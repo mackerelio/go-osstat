@@ -9,7 +9,7 @@ lint: testdeps
 
 testdeps:
 	go get -d -v -t ./...
-	go get golang.org/x/lint/golint
+	GO111MODULE=off go get golang.org/x/lint/golint
 
 clean:
 	go clean
