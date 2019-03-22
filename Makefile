@@ -19,4 +19,4 @@ testdeps:
 
 .PHONY: clean
 clean:
-	go clean
+	go clean ./...
