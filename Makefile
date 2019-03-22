@@ -1,5 +1,3 @@
-export GO111MODULE := on
-
 .PHONY: all
 all: clean lint test
 
