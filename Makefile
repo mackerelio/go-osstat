@@ -13,8 +13,8 @@ lint: testdeps
 .PHONY: testdeps
 testdeps:
 	go get -d -v -t ./...
-	go get golang.org/x/lint/golint
+	GO111MODULE=off go get golang.org/x/lint/golint
 
 .PHONY: clean
 clean:
-	go clean
+	go clean ./...
