@@ -4,6 +4,7 @@ clone_folder: c:\gopath\src\github.com\mackerelio\go-osstat
 
 environment:
   GOPATH: c:\gopath
+  GOROOT: c:\go112-x86
 
 install:
   - go version
