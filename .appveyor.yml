@@ -7,6 +7,7 @@ environment:
   GOROOT: c:\go112-x86
 
 install:
+  - set PATH=%GOROOT%\bin;%GOPATH%\bin;%PATH%;%MINGW%\bin
   - go version
   - go env
 
