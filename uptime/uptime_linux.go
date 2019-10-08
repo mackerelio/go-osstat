@@ -3,13 +3,14 @@
 package uptime
 
 import (
-	"syscall"
 	"time"
+
+	"golang.org/x/sys/unix"
 )
 
 func get() (time.Duration, error) {
-	var info syscall.Sysinfo_t
-	if err := syscall.Sysinfo(&info); err != nil {
+	var info unix.Sysinfo_t
+	if err := unix.Sysinfo(&info); err != nil {
 		return time.Duration(0), err
 	}
 	return time.Duration(info.Uptime) * time.Second, nil
