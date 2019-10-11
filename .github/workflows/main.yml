@@ -34,4 +34,3 @@ jobs:
       shell: bash
       env:
         CGO_ENABLED: ${{ matrix.cgo }}
-        GO111MODULE: on
