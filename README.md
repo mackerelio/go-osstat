@@ -2,6 +2,9 @@
 This is a library to get system metrics like cpu load and memory usage.
 The library is created for [mackerel-agent](https://github.com/mackerelio/mackerel-agent).
 
+[![GoDoc](https://godoc.org/github.com/mackerelio/go-osstat?status.svg)](https://godoc.org/github.com/mackerelio/go-osstat)
+[![Build Status](https://github.com/mackerelio/go-osstat/workflows/Build/badge.svg)](https://github.com/mackerelio/go-osstat/workflows/Build/badge.svg)
+
 ## Example
 ```go
 package main
