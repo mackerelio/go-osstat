@@ -4,11 +4,13 @@ package memory
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/unix"
@@ -60,8 +62,11 @@ func collectMemoryStats() (*Stats, error) {
 		}
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
 	// collect swap statistics from swapinfo command
-	cmd := exec.Command("swapinfo", "-k")
+	cmd := exec.CommandContext(ctx, "swapinfo", "-k")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
@@ -71,7 +76,6 @@ func collectMemoryStats() (*Stats, error) {
 	}
 	memory.SwapTotal, memory.SwapUsed, err = collectSwapStats(out)
 	if err != nil {
-		cmd.Process.Kill() // The process may stuck on write to pipe if the pipe buffer in kernel is full.
 		go cmd.Wait()
 		return nil, err
 	}

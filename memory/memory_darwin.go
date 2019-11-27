@@ -4,11 +4,13 @@ package memory
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 	"unsafe"
 
 	"golang.org/x/sys/unix"
@@ -16,8 +18,11 @@ import (
 
 // Get memory statistics
 func Get() (*Stats, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
 	// Reference: man 1 vm_stat
-	cmd := exec.Command("vm_stat")
+	cmd := exec.CommandContext(ctx, "vm_stat")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
@@ -27,7 +32,6 @@ func Get() (*Stats, error) {
 	}
 	memory, err := collectMemoryStats(out)
 	if err != nil {
-		cmd.Process.Kill() // The process may stuck on write to pipe if the pipe buffer in kernel is full.
 		go cmd.Wait()
 		return nil, err
 	}
