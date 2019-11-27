@@ -71,6 +71,8 @@ func collectMemoryStats() (*Stats, error) {
 	}
 	memory.SwapTotal, memory.SwapUsed, err = collectSwapStats(out)
 	if err != nil {
+		cmd.Process.Kill() // The process may stuck on write to pipe if the pipe buffer in kernel is full.
+		cmd.Wait()
 		return nil, err
 	}
 	if err := cmd.Wait(); err != nil {
