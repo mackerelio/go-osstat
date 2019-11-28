@@ -4,17 +4,22 @@ package network
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Get network statistics
 func Get() ([]Stats, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	// Reference: man 1 netstat
-	cmd := exec.Command("netstat", "-bni")
+	cmd := exec.CommandContext(ctx, "netstat", "-bni")
 	out, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
@@ -24,6 +29,7 @@ func Get() ([]Stats, error) {
 	}
 	networks, err := collectNetworkStats(out)
 	if err != nil {
+		go cmd.Wait()
 		return nil, err
 	}
 	if err := cmd.Wait(); err != nil {
