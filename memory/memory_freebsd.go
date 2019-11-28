@@ -62,7 +62,7 @@ func collectMemoryStats() (*Stats, error) {
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// collect swap statistics from swapinfo command

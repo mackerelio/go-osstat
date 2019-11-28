@@ -18,7 +18,7 @@ import (
 
 // Get memory statistics
 func Get() (*Stats, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	// Reference: man 1 vm_stat
