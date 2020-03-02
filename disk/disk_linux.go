@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// Get disk I/O statistics
+// Get disk I/O statistics.
 func Get() ([]Stats, error) {
 	// Reference: Documentation/iostats.txt in the source of Linux
 	file, err := os.Open("/proc/diskstats")
@@ -22,10 +22,11 @@ func Get() ([]Stats, error) {
 	return collectDiskStats(file)
 }
 
-// Stats represents disk I/O statistics for linux
+// Stats represents disk I/O statistics for linux.
 type Stats struct {
-	Name                            string
-	ReadsCompleted, WritesCompleted uint64
+	Name            string // device name; like "hda"
+	ReadsCompleted  uint64 // total number of reads completed successfully
+	WritesCompleted uint64 // total number of writes completed successfully
 }
 
 func collectDiskStats(out io.Reader) ([]Stats, error) {
