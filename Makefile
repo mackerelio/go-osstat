@@ -7,7 +7,6 @@ test:
 
 .PHONY: lint
 lint: testdeps
-	go vet ./...
 	golint -set_exit_status ./...
 
 .PHONY: testdeps

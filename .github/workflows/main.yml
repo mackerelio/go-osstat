@@ -25,5 +25,4 @@ jobs:
         go-version: ${{ matrix.go }}
     - run: |
         make test
-        go build ./cmd/osstat
-        ./osstat
+        go run ./cmd/osstat
