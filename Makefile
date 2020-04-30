@@ -7,13 +7,11 @@ test:
 
 .PHONY: lint
 lint: testdeps
-	go vet ./...
 	golint -set_exit_status ./...
 
 .PHONY: testdeps
 testdeps:
-	go get -d -v -t ./...
-	GO111MODULE=off go get golang.org/x/lint/golint
+	go install golang.org/x/lint/golint
 
 .PHONY: clean
 clean:

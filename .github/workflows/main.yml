@@ -1,36 +1,28 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - master
+  pull_request:
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    name: Lint
-    steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-go@v1
-      with:
-        go-version: 1.13.x
-    - run: |
-        export PATH="$PATH:$(go env GOPATH)/bin"
-        make lint
   test:
-    needs: lint
-    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['ubuntu-18.04', 'macOS-10.14', 'windows-2019']
-        go: ['1.13.x']
-        cgo: ['0', '1']
-    name: Go ${{ matrix.go }} on ${{ matrix.os }} CGO_ENABLED=${{ matrix.cgo }}
+        os: ['ubuntu-18.04', 'macOS-10.15', 'windows-2019']
+        go: ['1.14.x']
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@master
-    - name: Setup go
-      uses: actions/setup-go@v1
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - uses: actions/setup-go@v2-beta
       with:
         go-version: ${{ matrix.go }}
     - run: |
-        make test
-        cd cmd/osstat && go build && ./osstat
-      shell: bash
-      env:
-        CGO_ENABLED: ${{ matrix.cgo }}
+        make lint test
+        go run ./cmd/osstat
