@@ -9,18 +9,18 @@ jobs:
   test:
     strategy:
       matrix:
-        os: ['ubuntu-18.04', 'macOS-10.15', 'windows-2019']
+        os: ['ubuntu-18.04', 'macos-10.15', 'windows-2019']
         go: ['1.14.x']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
-    - uses: actions/setup-go@v2-beta
+    - uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go }}
     - run: |
