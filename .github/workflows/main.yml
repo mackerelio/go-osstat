@@ -8,6 +8,13 @@ on:
 env:
   GO111MODULE: on
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.35
   test:
     strategy:
       matrix:
@@ -26,5 +33,5 @@ jobs:
       with:
         go-version: ${{ matrix.go }}
     - run: |
-        make lint test
+        make test
         go run ./cmd/osstat
