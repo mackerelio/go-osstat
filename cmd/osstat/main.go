@@ -1,3 +1,9 @@
+// osstat shows os system metric statistics.
+//
+// Usage:
+//
+//	osstat
+//
 package main
 
 import (
@@ -6,9 +12,6 @@ import (
 )
 
 var name = "osstat"
-var version = "v0.0.0"
-var description = "show os system metric statistics"
-var author = ""
 
 func main() {
 	if errs := run(os.Args[1:], os.Stdout); errs != nil {
