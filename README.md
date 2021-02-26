@@ -33,12 +33,12 @@ func main() {
 
 ||loadavg|uptime|cpu|memory|network|disk i/o|
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-|Linux|o|o|o|o|o|o|
-|Darwin|o|o|△<sup>*1</sup>|o|o|x|
-|FreeBSD|o|o|x|o|o|x|
-|NetBSD|o|o|x|x|o|x|
-|OpenBSD|o|o|x|x|x|x|
-|Windows|x|o|x|o|x|x|
+|Linux|yes|yes|yes|yes|yes|yes|
+|Darwin|yes|yes|*1|yes|yes|no|
+|FreeBSD|yes|yes|no|yes|yes|no|
+|NetBSD|yes|yes|no|no|yes|no|
+|OpenBSD|yes|yes|no|no|no|no|
+|Windows|no|yes|no|yes|no|no|
 
 *1: unavailable without cgo
 
