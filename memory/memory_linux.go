@@ -26,7 +26,7 @@ func Get() (*Stats, error) {
 type Stats struct {
 	Total, Used, Buffers, Cached, Free, Available, Active, Inactive,
 	SwapTotal, SwapUsed, SwapCached, SwapFree, Mapped, Shmem, Slab,
-	PageTables, Committed, VmallocUsed, User uint64
+	PageTables, Committed, VmallocUsed uint64
 	MemAvailableEnabled bool
 }
 
@@ -79,8 +79,6 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 	} else {
 		memory.Used = memory.Total - memory.Free - memory.Buffers - memory.Cached
 	}
-
-	memory.User = memory.Total - memory.Free - memory.Buffers - memory.Cached - memory.Slab - memory.PageTables - memory.SwapCached
 
 	return &memory, nil
 }
