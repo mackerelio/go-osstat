@@ -25,7 +25,8 @@ func Get() (*Stats, error) {
 // Stats represents memory statistics for linux
 type Stats struct {
 	Total, Used, Buffers, Cached, Free, Available, Active, Inactive,
-	SwapTotal, SwapUsed, SwapCached, SwapFree uint64
+	SwapTotal, SwapUsed, SwapCached, SwapFree, Mapped, Shmem, Slab,
+	PageTables, Committed, VmallocUsed uint64
 	MemAvailableEnabled bool
 }
 
@@ -43,6 +44,12 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 		"SwapCached":   &memory.SwapCached,
 		"SwapTotal":    &memory.SwapTotal,
 		"SwapFree":     &memory.SwapFree,
+		"Mapped":       &memory.Mapped,
+		"Shmem":        &memory.Shmem,
+		"Slab":         &memory.Slab,
+		"PageTables":   &memory.PageTables,
+		"Committed_AS": &memory.Committed,
+		"VmallocUsed":  &memory.VmallocUsed,
 	}
 	for scanner.Scan() {
 		line := scanner.Text()
