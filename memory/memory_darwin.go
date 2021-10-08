@@ -70,7 +70,8 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 		return nil, fmt.Errorf("failed to scan output of vm_stat")
 	}
 	line := scanner.Text()
-	if !strings.HasPrefix(line, "Mach Virtual Memory Statistics:") {
+	var pageSize uint64
+	if _, err := fmt.Sscanf(line, "Mach Virtual Memory Statistics: (page size of %d bytes)", &pageSize); err != nil {
 		return nil, fmt.Errorf("unexpected output of vm_stat: %s", line)
 	}
 
@@ -95,7 +96,7 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 		if ptr := memStats[line[:i]]; ptr != nil {
 			val := strings.TrimRight(strings.TrimSpace(line[i+1:]), ".")
 			if v, err := strconv.ParseUint(val, 10, 64); err == nil {
-				*ptr = v * 4096
+				*ptr = v * pageSize
 			}
 		}
 	}
