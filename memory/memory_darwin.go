@@ -61,16 +61,16 @@ type Stats struct {
 }
 
 // References:
-//   - https://support.apple.com/en-us/HT201464#memory
-//   - https://developer.apple.com/library/content/documentation/Performance/Conceptual/ManagingMemoryStats/Articles/AboutMemoryStats.html
-//   - https://opensource.apple.com/source/system_cmds/system_cmds-790/vm_stat.tproj/
+//   - https://support.apple.com/guide/activity-monitor/view-memory-usage-actmntr1004/10.14/mac/11.0
+//   - https://opensource.apple.com/source/system_cmds/system_cmds-880.60.2/vm_stat.tproj/
 func collectMemoryStats(out io.Reader) (*Stats, error) {
 	scanner := bufio.NewScanner(out)
 	if !scanner.Scan() {
 		return nil, fmt.Errorf("failed to scan output of vm_stat")
 	}
 	line := scanner.Text()
-	if !strings.HasPrefix(line, "Mach Virtual Memory Statistics:") {
+	var pageSize uint64
+	if _, err := fmt.Sscanf(line, "Mach Virtual Memory Statistics: (page size of %d bytes)", &pageSize); err != nil {
 		return nil, fmt.Errorf("unexpected output of vm_stat: %s", line)
 	}
 
@@ -95,7 +95,7 @@ func collectMemoryStats(out io.Reader) (*Stats, error) {
 		if ptr := memStats[line[:i]]; ptr != nil {
 			val := strings.TrimRight(strings.TrimSpace(line[i+1:]), ".")
 			if v, err := strconv.ParseUint(val, 10, 64); err == nil {
-				*ptr = v * 4096
+				*ptr = v * pageSize
 			}
 		}
 	}
