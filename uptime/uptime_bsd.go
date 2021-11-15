@@ -1,3 +1,4 @@
+//go:build darwin || freebsd || netbsd || openbsd
 // +build darwin freebsd netbsd openbsd
 
 package uptime
@@ -22,5 +23,5 @@ func get() (time.Duration, error) {
 	}
 	timeval = *(*syscall.Timeval)(unsafe.Pointer(&out[0]))
 	sec, nsec := timeval.Unix()
-	return time.Now().Sub(time.Unix(sec, nsec)), nil
+	return time.Since(time.Unix(sec, nsec)), nil
 }
