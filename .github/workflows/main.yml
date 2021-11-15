@@ -5,8 +5,6 @@ on:
     branches:
     - master
   pull_request:
-env:
-  GO111MODULE: on
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -18,8 +16,8 @@ jobs:
   test:
     strategy:
       matrix:
-        os: ['ubuntu-18.04', 'macos-10.15', 'windows-2019']
-        go: ['1.16.x', '1.15.x', '1.14.x']
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        go: ['1.17.x', '1.16.x']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
