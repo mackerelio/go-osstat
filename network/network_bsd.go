@@ -1,3 +1,4 @@
+//go:build darwin || freebsd || netbsd
 // +build darwin freebsd netbsd
 
 package network
@@ -29,7 +30,8 @@ func Get() ([]Stats, error) {
 	}
 	networks, err := collectNetworkStats(out)
 	if err != nil {
-		go cmd.Wait()
+		// it is needed to cleanup the process, but its result is not needed.
+		go cmd.Wait() //nolint:errcheck
 		return nil, err
 	}
 	if err := cmd.Wait(); err != nil {

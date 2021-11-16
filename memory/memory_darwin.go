@@ -1,3 +1,4 @@
+//go:build darwin
 // +build darwin
 
 package memory
@@ -32,7 +33,8 @@ func Get() (*Stats, error) {
 	}
 	memory, err := collectMemoryStats(out)
 	if err != nil {
-		go cmd.Wait()
+		// it is needed to cleanup the process, but its result is not needed.
+		go cmd.Wait() //nolint:errcheck
 		return nil, err
 	}
 	if err := cmd.Wait(); err != nil {

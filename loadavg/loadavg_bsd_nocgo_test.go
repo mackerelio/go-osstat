@@ -1,3 +1,4 @@
+//go:build (darwin || freebsd || netbsd || openbsd) && !cgo
 // +build darwin freebsd netbsd openbsd
 // +build !cgo
 
