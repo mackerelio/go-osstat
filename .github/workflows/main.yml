@@ -9,10 +9,8 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: golangci/golangci-lint-action@v2
-      with:
-        version: v1.43
+    - uses: actions/checkout@v3
+    - uses: golangci/golangci-lint-action@v3
   test:
     strategy:
       matrix:
@@ -20,8 +18,8 @@ jobs:
         go: ['1.17.x', '1.16.x']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
