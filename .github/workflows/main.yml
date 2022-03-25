@@ -9,19 +9,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: golangci/golangci-lint-action@v2
-      with:
-        version: v1.43
+    - uses: actions/checkout@v3
+    - uses: golangci/golangci-lint-action@v3
   test:
+    uses: mackerelio/workflows/.github/workflows/go-test.yml@main
+  testrun:
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
         go: ['1.17.x', '1.16.x']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/checkout@v3
+    - uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -30,6 +30,4 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go }}
-    - run: |
-        make test
-        go run ./cmd/osstat
+    - run: go run ./cmd/osstat
