@@ -7,27 +7,10 @@ on:
   pull_request:
 jobs:
   lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - uses: golangci/golangci-lint-action@v3
+    uses: mackerelio/workflows/.github/workflows/go-lint.yml@main
   test:
     uses: mackerelio/workflows/.github/workflows/go-test.yml@main
   testrun:
-    strategy:
-      matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        go: ['1.19.x', '1.18.x']
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - uses: actions/setup-go@v3
-      with:
-        go-version: ${{ matrix.go }}
-    - run: go run ./cmd/osstat
+    uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@run-sc
+    with:
+      run: go run ./cmd/osstat
