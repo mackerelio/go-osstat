@@ -1,3 +1,6 @@
+//go:build linux || darwin || freebsd || netbsd
+// +build linux darwin freebsd netbsd
+
 package main
 
 import (
