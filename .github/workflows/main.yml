@@ -11,6 +11,6 @@ jobs:
   test:
     uses: mackerelio/workflows/.github/workflows/go-test.yml@main
   testrun:
-    uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@run-sc
+    uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@main
     with:
       run: go run ./cmd/osstat
