@@ -4,7 +4,6 @@ The library is created for [mackerel-agent](https://github.com/mackerelio/macker
 
 [![GoDev](https://pkg.go.dev/badge/github.com/mackerelio/go-osstat)](https://pkg.go.dev/github.com/mackerelio/go-osstat)
 [![Build Status](https://github.com/mackerelio/go-osstat/workflows/Build/badge.svg)](https://github.com/mackerelio/go-osstat/workflows/Build/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/mackerelio/go-osstat/badge.svg)](https://coveralls.io/r/mackerelio/go-osstat)
 
 ## Example
 ```go
