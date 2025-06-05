@@ -7,10 +7,10 @@ on:
   pull_request:
 jobs:
   lint:
-    uses: mackerelio/workflows/.github/workflows/go-lint.yml@v1.2.0
+    uses: mackerelio/workflows/.github/workflows/go-lint.yml@v1.5.0
   test:
-    uses: mackerelio/workflows/.github/workflows/go-test.yml@v1.2.0
+    uses: mackerelio/workflows/.github/workflows/go-test.yml@v1.5.0
   testrun:
-    uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@v1.2.0
+    uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@v1.5.0
     with:
       run: go run ./cmd/osstat
