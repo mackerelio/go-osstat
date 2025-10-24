@@ -77,7 +77,7 @@ func collectMemoryStats() (*Stats, error) {
 	}
 	memory.SwapTotal, memory.SwapUsed, err = collectSwapStats(out)
 	if err != nil {
-		go cmd.Wait()
+		go cmd.Wait() // nolint
 		return nil, err
 	}
 	if err := cmd.Wait(); err != nil {
