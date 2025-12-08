@@ -9,7 +9,7 @@ jobs:
   lint:
     uses: mackerelio/workflows/.github/workflows/go-lint.yml@7653987676cc233af59a390d142b5cf6e65a526f # v1.6.0
   test:
-    uses: mackerelio/workflows/.github/workflows/go-test.yml@7653987676cc233af59a390d142b5cf6e65a526f # v1.6.0
+    uses: mackerelio/workflows/.github/workflows/go-test.yml@52736435ff08612880b76fd6618ca82ae7bba420 # v1.8.0
   testrun:
     uses: mackerelio/workflows/.github/workflows/setup-go-matrix.yml@7653987676cc233af59a390d142b5cf6e65a526f # v1.6.0
     with:
