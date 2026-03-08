@@ -1,5 +1,5 @@
 module github.com/mackerelio/go-osstat
 
-go 1.24.0
+go 1.25.0
 
-require golang.org/x/sys v0.41.0
+require golang.org/x/sys v0.42.0
